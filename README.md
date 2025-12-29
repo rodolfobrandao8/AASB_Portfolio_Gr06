@@ -1,11 +1,11 @@
-# AASB_Portfolio_Gr06
+# Portefólio de Algoritmos para análise de sequências biológicas (AASB 2025/2026)
 
 Biblioteca Python que implementa os principais algoritmos abordados na UC.
 O projeto foi desenvolvido com foco em correção algorítmica, qualidade de código, documentação completa e testes unitários, sendo facilmente importável e reutilizável por terceiros.
 
 ---
 
-##  Conteúdo do Projeto
+## Conteúdo do Projeto
 
 Este portefólio inclui implementações dos seguintes tópicos:
 
@@ -215,3 +215,48 @@ alvo = "TTATGCGATGAC"
 
 pos, sub, prob = subsequencia_mais_provavel(pwm, alvo)
 print(pos, sub, prob)
+
+
+```
+# Testes Unitários
+Os testes foram desenvolvidos com unittest / pytest e cobrem:
+Casos normais
+Casos limite (sequências vazias, tamanho 1)
+Exceções
+Comparações com exemplos da literatura
+
+## Executar testes
+
+```bash
+pytest
+```
+
+## Executar testes com cobertura
+``` bash
+pytest --cov=bioinf --cov-report=term-missing
+```
+
+# Documentação (Sphinx)
+A documentação inclui:
+Página inicial
+Guia de instalação
+Tutorial de utilização
+Referência completa da API (docstrings)
+
+# Qualidade do Código (Radon)
+O código foi desenvolvido de forma a garantir:
+Complexidade ciclomática aceitável
+Funções pequenas e legíveis
+Conformidade com PEP 8
+
+## Avaliar complexidade:
+
+```bash
+radon cc bioinf/ -a -s
+radon mi bioinf/ -s
+```
+
+# Autores
+Grupo 06
+UC: Algoritmos e Análise de Sistemas Biológicos
+Ano letivo: 2025/2026
