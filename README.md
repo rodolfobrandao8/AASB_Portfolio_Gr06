@@ -5,7 +5,7 @@ O projeto foi desenvolvido com foco em correção algorítmica, qualidade de có
 
 ---
 
-## 📦 Conteúdo do Projeto
+##  Conteúdo do Projeto
 
 Este portefólio inclui implementações dos seguintes tópicos:
 
