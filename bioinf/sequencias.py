@@ -1,31 +1,73 @@
+# =========================
+# Validação de sequências
+# =========================
+
 def validar_dna(seq):
-    if not seq:  # Se a string estiver vazia
+    if not seq:
         return False
-        
     seq = seq.upper()
-    validos = {'A', 'C', 'G', 'T'}
-    return set(seq).issubset(validos)
+    return set(seq).issubset({'A', 'C', 'G', 'T'})
+
+
+def validar_rna(seq):
+    if not seq:
+        return False
+    seq = seq.upper()
+    return set(seq).issubset({'A', 'C', 'G', 'U'})
+
+
+def validar_proteina(seq):
+    if not seq:
+        return False
+    seq = seq.upper()
+    aminoacidos = {
+        'A','C','D','E','F','G','H','I','K','L',
+        'M','N','P','Q','R','S','T','V','W','Y'
+    }
+    return set(seq).issubset(aminoacidos)
+
+
+# =========================
+# Transcrição
+# =========================
 
 def transcricao(dna_seq):
-    if not dna_seq:
+    if not validar_dna(dna_seq):
         return ""
-    
-    # Simplesmente troca T por U e garante maiúsculas
     return dna_seq.upper().replace('T', 'U')
 
-def complemento_inverso(dna_seq):
-    if not dna_seq:
+
+# =========================
+# Operações com DNA
+# =========================
+
+def complemento(dna_seq):
+    if not validar_dna(dna_seq):
         return ""
         
-    dna_seq = dna_seq.upper()
-    # Dicionário de complementos
     mapa = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C'}
-    
-    # 1. Calcular o complemento (base a base)
     complemento = ""
-    for base in dna_seq:
-        # Se a base não estiver no mapa (ex: N), mantém a original ou ignora
-        complemento += mapa.get(base, base)
+    for base in dna_seq.upper():
+        complemento += mapa[base]
+    return complemento
+
+
+def reverso(seq):
+    if not seq:
+        return ""
+    return seq[::-1]
+
+
+def complemento_inverso(dna_seq):
+    if not validar_dna(dna_seq):
+        return ""
         
-    # 2. Inverter a string (slice [::-1] é o truque do Python para inverter)
+    mapa = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C'}
+    complemento = ""
+    for base in dna_seq.upper():
+        complemento += mapa[base]
     return complemento[::-1]
+
+
+dna = "ATGCCGTA"
+print(validar_dna(dna))

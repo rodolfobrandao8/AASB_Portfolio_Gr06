@@ -1,231 +1,147 @@
-def needleman_wunsch(seq1, seq2, match=2, mismatch=-1, gap=-1):
+BLOSUM62 = {
+    'A': {'A': 4,  'C': 0,  'G': 0,  'T': 0},
+    'C': {'A': 0,  'C': 9,  'G': -3, 'T': -1},
+    'G': {'A': 0,  'C': -3, 'G': 6,  'T': -2},
+    'T': {'A': 0,  'C': -1, 'G': -2, 'T': 5}
+}
 
-    # 1. Calcular a matriz de scores
-    matriz = _criar_matriz_pontuacao(seq1, seq2, match, mismatch, gap)
-    
-    # 2. Obter o score final (canto inferior direito)
-    score = matriz[len(seq1)][len(seq2)]
-    
-    # 3. Reconstruir o alinhamento (Traceback)
-    alin1, alin2 = _traceback(seq1, seq2, matriz, match, mismatch, gap)
-    
-    return alin1, alin2, score
+def score_subst(a, b, matriz):
+    return matriz[a][b]
 
 
-def _criar_matriz_pontuacao(seq1, seq2, match, mismatch, gap):
-    """Função auxiliar para preencher a matriz de programação dinâmica."""
+def dot_plot(seq1, seq2):
+    """
+    Cria uma matriz de pontos (1 = match, 0 = mismatch)
+    """
+    matriz = []
+    for a in seq1:
+        linha = []
+        for b in seq2:
+            linha.append(1 if a == b else 0)
+        matriz.append(linha)
+    return matriz
+
+
+
+def needleman_wunsch(seq1, seq2, matriz_subst=BLOSUM62, gap=-5):
     rows = len(seq1) + 1
     cols = len(seq2) + 1
-    
-    # Criar matriz preenchida com zeros
-    matriz = [[0 for _ in range(cols)] for _ in range(rows)]
-    
-    # Inicializar primeira linha e coluna com gaps acumulados
+    matriz = [[0]*cols for _ in range(rows)]
+
     for i in range(1, rows):
         matriz[i][0] = matriz[i-1][0] + gap
     for j in range(1, cols):
         matriz[0][j] = matriz[0][j-1] + gap
-        
-    # Preencher o resto da matriz
+
     for i in range(1, rows):
         for j in range(1, cols):
-            # Calcular pontuação diagonal (Match ou Mismatch?)
-            if seq1[i-1] == seq2[j-1]:
-                score_diagonal = matriz[i-1][j-1] + match
-            else:
-                score_diagonal = matriz[i-1][j-1] + mismatch
-                
-            # Calcular pontuação vinda de cima (Gap na seq2)
-            score_cima = matriz[i-1][j] + gap
-            
-            # Calcular pontuação vinda da esquerda (Gap na seq1)
-            score_esquerda = matriz[i][j-1] + gap
-            
-            # Escolher o máximo
-            matriz[i][j] = max(score_diagonal, score_cima, score_esquerda)
-            
-    return matriz
+            diag = matriz[i-1][j-1] + score_subst(seq1[i-1], seq2[j-1], matriz_subst)
+            cima = matriz[i-1][j] + gap
+            esq  = matriz[i][j-1] + gap
+            matriz[i][j] = max(diag, cima, esq)
+
+    return _traceback_nw(seq1, seq2, matriz, matriz_subst, gap)
 
 
-def _traceback(seq1, seq2, matriz, match, mismatch, gap):
-    """Função auxiliar para reconstruir o caminho ótimo (do fim para o início)."""
-    alin1 = ""
-    alin2 = ""
-    
-    # Começar no canto inferior direito
-    i = len(seq1)
-    j = len(seq2)
-    
+def _traceback_nw(seq1, seq2, matriz, matriz_subst, gap):
+    i, j = len(seq1), len(seq2)
+    a1, a2 = "", ""
+
     while i > 0 or j > 0:
-        score_atual = matriz[i][j]
-        
-        # Verificar se veio da Diagonal (Match/Mismatch)
-        # Nota: i>0 e j>0 garante que não estamos na borda
-        score_diag = matriz[i-1][j-1] if (i > 0 and j > 0) else -99999
-        match_score = match if (i > 0 and j > 0 and seq1[i-1] == seq2[j-1]) else mismatch
-        
-        # Verificar se veio de Cima ou Esquerda
-        score_cima = matriz[i-1][j] if i > 0 else -99999
-        score_esq = matriz[i][j-1] if j > 0 else -99999
-        
-        # Lógica de prioridade: Diagonal > Cima > Esquerda (podes ajustar)
-        if i > 0 and j > 0 and score_atual == score_diag + match_score:
-            alin1 += seq1[i-1]
-            alin2 += seq2[j-1]
+        if i > 0 and j > 0 and matriz[i][j] == matriz[i-1][j-1] + score_subst(seq1[i-1], seq2[j-1], matriz_subst):
+            a1 += seq1[i-1]
+            a2 += seq2[j-1]
             i -= 1
             j -= 1
-        elif i > 0 and score_atual == score_cima + gap:
-            alin1 += seq1[i-1]
-            alin2 += "-"
+        elif i > 0 and matriz[i][j] == matriz[i-1][j] + gap:
+            a1 += seq1[i-1]
+            a2 += "-"
             i -= 1
-        else: # Veio da esquerda
-            alin1 += "-"
-            alin2 += seq2[j-1]
+        else:
+            a1 += "-"
+            a2 += seq2[j-1]
             j -= 1
-            
-    # Inverter as strings porque construímos do fim para o início
-    return alin1[::-1], alin2[::-1]
 
-def smith_waterman(seq1, seq2, match=2, mismatch=-1, gap=-1):
-   
-    # 1. Calcular a matriz (com a regra dos zeros)
-    matriz, max_i, max_j = _criar_matriz_sw(seq1, seq2, match, mismatch, gap)
-    
-    # 2. O score final é o valor máximo encontrado na matriz inteira
-    score = matriz[max_i][max_j]
-    
-    # 3. Reconstruir o alinhamento a partir desse máximo
-    alin1, alin2 = _traceback_sw(seq1, seq2, matriz, max_i, max_j, match, mismatch, gap)
-    
-    return alin1, alin2, score
+    return a1[::-1], a2[::-1], matriz[len(seq1)][len(seq2)]
 
 
-def _criar_matriz_sw(seq1, seq2, match, mismatch, gap):
-    """Gera a matriz para Smith-Waterman e guarda onde está o valor máximo."""
+
+def smith_waterman(seq1, seq2, matriz_subst=BLOSUM62, gap=-5):
     rows = len(seq1) + 1
     cols = len(seq2) + 1
-    matriz = [[0 for _ in range(cols)] for _ in range(rows)]
-    
+    matriz = [[0]*cols for _ in range(rows)]
+
     max_score = 0
-    max_i, max_j = 0, 0
-    
-    # Nota: A primeira linha e coluna já são zeros, não precisamos de fazer nada (diferente do NW)
-    
+    max_pos = (0, 0)
+
     for i in range(1, rows):
         for j in range(1, cols):
-            # Calcular scores
-            if seq1[i-1] == seq2[j-1]:
-                score_diag = matriz[i-1][j-1] + match
-            else:
-                score_diag = matriz[i-1][j-1] + mismatch
-                
-            score_cima = matriz[i-1][j] + gap
-            score_esq = matriz[i][j-1] + gap
-            
-            # A regra de ouro: O score nunca pode ser negativo (mínimo é 0)
-            matriz[i][j] = max(0, score_diag, score_cima, score_esq)
-            
-            # Guardar o recorde (onde começa o melhor alinhamento local)
+            diag = matriz[i-1][j-1] + score_subst(seq1[i-1], seq2[j-1], matriz_subst)
+            cima = matriz[i-1][j] + gap
+            esq  = matriz[i][j-1] + gap
+            matriz[i][j] = max(0, diag, cima, esq)
+
             if matriz[i][j] > max_score:
                 max_score = matriz[i][j]
-                max_i, max_j = i, j
-                
-    return matriz, max_i, max_j
+                max_pos = (i, j)
+
+    return _traceback_sw(seq1, seq2, matriz, max_pos, matriz_subst, gap)
 
 
-def _traceback_sw(seq1, seq2, matriz, start_i, start_j, match, mismatch, gap):
-    """Reconstrói o caminho parando ao encontrar zero."""
-    alin1 = ""
-    alin2 = ""
-    i, j = start_i, start_j
-    
-    # Loop continua enquanto não encontrarmos um zero na matriz
+def _traceback_sw(seq1, seq2, matriz, start, matriz_subst, gap):
+    i, j = start
+    a1, a2 = "", ""
+
     while matriz[i][j] != 0:
-        score_atual = matriz[i][j]
-        
-        # Recalcular de onde poderia ter vindo para decidir o caminho
-        score_diag = matriz[i-1][j-1]
-        match_score = match if seq1[i-1] == seq2[j-1] else mismatch
-        
-        score_cima = matriz[i-1][j]
-        score_esq = matriz[i][j-1]
-        
-        if score_atual == score_diag + match_score:
-            alin1 += seq1[i-1]
-            alin2 += seq2[j-1]
+        if matriz[i][j] == matriz[i-1][j-1] + score_subst(seq1[i-1], seq2[j-1], matriz_subst):
+            a1 += seq1[i-1]
+            a2 += seq2[j-1]
             i -= 1
             j -= 1
-        elif score_atual == score_cima + gap:
-            alin1 += seq1[i-1]
-            alin2 += "-"
+        elif matriz[i][j] == matriz[i-1][j] + gap:
+            a1 += seq1[i-1]
+            a2 += "-"
             i -= 1
-        else: # Esquerda
-            alin1 += "-"
-            alin2 += seq2[j-1]
-            j -= 1
-            
-    return alin1[::-1], alin2[::-1]
-
-def gerar_consenso(alin1, alin2):
-    """
-    Gera uma sequência de consenso a partir de duas sequências alinhadas.
-    Regra simples: Se iguais mantém, se diferentes escolhe o caráter não-gap ou o primeiro.
-    """
-    consenso = ""
-    for c1, c2 in zip(alin1, alin2):
-        if c1 == c2:
-            consenso += c1
-        elif c1 == '-':
-            consenso += c2
-        elif c2 == '-':
-            consenso += c1
         else:
-            # Em caso de conflito (ex: A vs T), escolhemos arbitrariamente o primeiro
-            # Numa implementação avançada, usaríamos contagem de frequências
-            consenso += c1 
+            a1 += "-"
+            a2 += seq2[j-1]
+            j -= 1
+
+    return a1[::-1], a2[::-1], matriz[start[0]][start[1]]
+
+
+
+def consenso_multiplas(alinhamento):
+    consenso = ""
+    for col in zip(*alinhamento):
+        consenso += max(set(col), key=col.count)
     return consenso
 
-def alinhamento_multiplo(lista_seqs, match=2, mismatch=-1, gap=-1):
-    """
-    Realiza alinhamento múltiplo progressivo (Heurística Gulosa).
-    1. Procura o par de sequências com melhor score.
-    2. Alinha-as e gera um consenso.
-    3. Substitui o par pelo consenso na lista.
-    4. Repete até sobrar apenas uma sequência (o consenso global).
-    
-    Retorna:
-        str: A sequência de consenso final.
-    """
-    # Copiar lista para não estragar a original
-    seqs_atuais = lista_seqs[:]
-    
-    while len(seqs_atuais) > 1:
-        melhor_score = -float('inf')
-        melhor_par = (-1, -1)
-        melhor_alinhamento = ("", "")
-        
-        # 1. Comparar todos contra todos para achar o par mais compatível
-        for i in range(len(seqs_atuais)):
-            for j in range(i + 1, len(seqs_atuais)):
-                # Usamos o NW que já criaste para ver o score
-                s1, s2, score = needleman_wunsch(seqs_atuais[i], seqs_atuais[j], match, mismatch, gap)
-                
+
+
+def alinhamento_multiplo(seqs, matriz_subst=BLOSUM62, gap=-5):
+    alinhamentos = [[s] for s in seqs]
+
+    while len(alinhamentos) > 1:
+        melhor_score = -1e9
+        melhor_par = None
+        melhor_alin = None
+
+        for i in range(len(alinhamentos)):
+            for j in range(i+1, len(alinhamentos)):
+                a1, a2, score = needleman_wunsch(alinhamentos[i][0], alinhamentos[j][0], matriz_subst, gap)
                 if score > melhor_score:
                     melhor_score = score
                     melhor_par = (i, j)
-                    melhor_alinhamento = (s1, s2)
-        
-        # 2. Gerar consenso do melhor par
-        s1_alin, s2_alin = melhor_alinhamento
-        novo_consenso = gerar_consenso(s1_alin, s2_alin)
-        
-        # 3. Remover as sequências originais e adicionar o consenso
+                    melhor_alin = (a1, a2)
+
         i, j = melhor_par
-        # Remover do maior índice para o menor para não afetar a ordem
-        seqs_atuais.pop(max(i, j))
-        seqs_atuais.pop(min(i, j))
-        
-        seqs_atuais.append(novo_consenso)
-        
-    # No final, sobra apenas uma string na lista: o consenso global
-    return seqs_atuais[0]
+        novo_alin = []
+        for k in range(len(melhor_alin[0])):
+            novo_alin.append(melhor_alin[0][k])
+
+        alinhamentos.pop(j)
+        alinhamentos.pop(i)
+        alinhamentos.append([melhor_alin[0], melhor_alin[1]])
+
+    return alinhamentos[0], consenso_multiplas(alinhamentos[0])
