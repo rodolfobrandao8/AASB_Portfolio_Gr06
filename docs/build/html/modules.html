@@ -1,0 +1,233 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentação da API &mdash; AASB Portfolio 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Bem-vindo ao Portfolio de Bioinformática" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            AASB Portfolio
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdos:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentação da API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.sequencias.complemento_inverso"><code class="docutils literal notranslate"><span class="pre">complemento_inverso()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.sequencias.transcricao"><code class="docutils literal notranslate"><span class="pre">transcricao()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.sequencias.validar_dna"><code class="docutils literal notranslate"><span class="pre">validar_dna()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.alinhamento.alinhamento_multiplo"><code class="docutils literal notranslate"><span class="pre">alinhamento_multiplo()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.alinhamento.gerar_consenso"><code class="docutils literal notranslate"><span class="pre">gerar_consenso()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.alinhamento.needleman_wunsch"><code class="docutils literal notranslate"><span class="pre">needleman_wunsch()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.alinhamento.smith_waterman"><code class="docutils literal notranslate"><span class="pre">smith_waterman()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.motifs.criar_pwm"><code class="docutils literal notranslate"><span class="pre">criar_pwm()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.motifs.probabilidade_seq_pwm"><code class="docutils literal notranslate"><span class="pre">probabilidade_seq_pwm()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.motifs.procurar_motifs"><code class="docutils literal notranslate"><span class="pre">procurar_motifs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.motifs.prosite_para_regex"><code class="docutils literal notranslate"><span class="pre">prosite_para_regex()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.motifs.subsequencia_mais_provavel"><code class="docutils literal notranslate"><span class="pre">subsequencia_mais_provavel()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.filogenia.distancia_levenshtein"><code class="docutils literal notranslate"><span class="pre">distancia_levenshtein()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.filogenia.upgma_simples"><code class="docutils literal notranslate"><span class="pre">upgma_simples()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.blast.blast_simplificado"><code class="docutils literal notranslate"><span class="pre">blast_simplificado()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AASB Portfolio</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Documentação da API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bioinf.sequencias">
+<span id="documentacao-da-api"></span><h1>Documentação da API<a class="headerlink" href="#module-bioinf.sequencias" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="bioinf.sequencias.complemento_inverso">
+<span class="sig-prename descclassname"><span class="pre">bioinf.sequencias.</span></span><span class="sig-name descname"><span class="pre">complemento_inverso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dna_seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/sequencias.html#complemento_inverso"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.sequencias.complemento_inverso" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bioinf.sequencias.transcricao">
+<span class="sig-prename descclassname"><span class="pre">bioinf.sequencias.</span></span><span class="sig-name descname"><span class="pre">transcricao</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dna_seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/sequencias.html#transcricao"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.sequencias.transcricao" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bioinf.sequencias.validar_dna">
+<span class="sig-prename descclassname"><span class="pre">bioinf.sequencias.</span></span><span class="sig-name descname"><span class="pre">validar_dna</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/sequencias.html#validar_dna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.sequencias.validar_dna" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function" id="module-bioinf.alinhamento">
+<dt class="sig sig-object py" id="bioinf.alinhamento.alinhamento_multiplo">
+<span class="sig-prename descclassname"><span class="pre">bioinf.alinhamento.</span></span><span class="sig-name descname"><span class="pre">alinhamento_multiplo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lista_seqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/alinhamento.html#alinhamento_multiplo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.alinhamento.alinhamento_multiplo" title="Link to this definition"></a></dt>
+<dd><p>Realiza alinhamento múltiplo progressivo (Heurística Gulosa).
+1. Procura o par de sequências com melhor score.
+2. Alinha-as e gera um consenso.
+3. Substitui o par pelo consenso na lista.
+4. Repete até sobrar apenas uma sequência (o consenso global).</p>
+<dl class="simple">
+<dt>Retorna:</dt><dd><p>str: A sequência de consenso final.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bioinf.alinhamento.gerar_consenso">
+<span class="sig-prename descclassname"><span class="pre">bioinf.alinhamento.</span></span><span class="sig-name descname"><span class="pre">gerar_consenso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alin1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alin2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/alinhamento.html#gerar_consenso"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.alinhamento.gerar_consenso" title="Link to this definition"></a></dt>
+<dd><p>Gera uma sequência de consenso a partir de duas sequências alinhadas.
+Regra simples: Se iguais mantém, se diferentes escolhe o caráter não-gap ou o primeiro.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bioinf.alinhamento.needleman_wunsch">
+<span class="sig-prename descclassname"><span class="pre">bioinf.alinhamento.</span></span><span class="sig-name descname"><span class="pre">needleman_wunsch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/alinhamento.html#needleman_wunsch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.alinhamento.needleman_wunsch" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bioinf.alinhamento.smith_waterman">
+<span class="sig-prename descclassname"><span class="pre">bioinf.alinhamento.</span></span><span class="sig-name descname"><span class="pre">smith_waterman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/alinhamento.html#smith_waterman"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.alinhamento.smith_waterman" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function" id="module-bioinf.motifs">
+<dt class="sig sig-object py" id="bioinf.motifs.criar_pwm">
+<span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">criar_pwm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lista_seqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudocount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#criar_pwm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.criar_pwm" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bioinf.motifs.probabilidade_seq_pwm">
+<span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">probabilidade_seq_pwm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pwm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequencia</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#probabilidade_seq_pwm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.probabilidade_seq_pwm" title="Link to this definition"></a></dt>
+<dd><p>Calcula a probabilidade de uma sequência gerar a PWM (multiplicação).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bioinf.motifs.procurar_motifs">
+<span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">procurar_motifs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sequencia</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padrao_prosite</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#procurar_motifs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.procurar_motifs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bioinf.motifs.prosite_para_regex">
+<span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">prosite_para_regex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">padrao_prosite</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#prosite_para_regex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.prosite_para_regex" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bioinf.motifs.subsequencia_mais_provavel">
+<span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">subsequencia_mais_provavel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pwm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequencia_alvo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#subsequencia_mais_provavel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.subsequencia_mais_provavel" title="Link to this definition"></a></dt>
+<dd><p>Desliza a PWM pela sequência alvo para achar a posição mais provável.
+Retorna (Posição_Inicial, Subsequência, Probabilidade).</p>
+</dd></dl>
+
+<dl class="py function" id="module-bioinf.filogenia">
+<dt class="sig sig-object py" id="bioinf.filogenia.distancia_levenshtein">
+<span class="sig-prename descclassname"><span class="pre">bioinf.filogenia.</span></span><span class="sig-name descname"><span class="pre">distancia_levenshtein</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/filogenia.html#distancia_levenshtein"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.filogenia.distancia_levenshtein" title="Link to this definition"></a></dt>
+<dd><p>Calcula a distância de edição entre duas strings.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bioinf.filogenia.upgma_simples">
+<span class="sig-prename descclassname"><span class="pre">bioinf.filogenia.</span></span><span class="sig-name descname"><span class="pre">upgma_simples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lista_seqs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/filogenia.html#upgma_simples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.filogenia.upgma_simples" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function" id="module-bioinf.blast">
+<dt class="sig sig-object py" id="bioinf.blast.blast_simplificado">
+<span class="sig-prename descclassname"><span class="pre">bioinf.blast.</span></span><span class="sig-name descname"><span class="pre">blast_simplificado</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq_alvo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/blast.html#blast_simplificado"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.blast.blast_simplificado" title="Link to this definition"></a></dt>
+<dd><p>Executa uma pesquisa BLAST simplificada.
+1. Cria mapa de palavras (seeds) da query.
+2. Encontra hits na sequência alvo.
+3. Estende os hits para encontrar o melhor alinhamento local (HSP).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – Sequência de procura.</p></li>
+<li><p><strong>seq_alvo</strong> (<em>str</em>) – Sequência onde procurar (Database).</p></li>
+<li><p><strong>w</strong> (<em>int</em>) – Tamanho da palavra (word size). Default 3 (comum para proteínas/DNA curto).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(Melhor_Subsequencia_Query, Melhor_Subsequencia_Alvo, Score, Indice_Inicio)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Bem-vindo ao Portfolio de Bioinformática" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Grupo 06.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

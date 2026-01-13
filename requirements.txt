@@ -1,0 +1,5 @@
+pytest
+radon
+sphinx
+coverage
+sphinx-rtd-theme
