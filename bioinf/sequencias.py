@@ -209,3 +209,22 @@ def complemento_inverso(dna_seq):
     for base in dna_seq.upper():
         complemento += mapa[base]
     return complemento[::-1]
+
+def get_orfs(dna): 
+    if not isinstance(dna, str):
+        return []
+
+    seq = dna.upper().replace(" ", "").replace("\n", "")
+    codao_stop = {"TAA", "TAG", "TGA"}
+    orfs = []
+
+    for i in range(0, len(seq) - 2, 3):
+        if seq[i:i+3] != "ATG":
+            continue
+
+        for j in range(i, len(seq) - 2, 3):
+            if seq[j:j+3] in codao_stop:
+                orfs.append(seq[i:j+3])
+                break
+
+    return orfs
