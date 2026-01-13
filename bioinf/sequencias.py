@@ -210,21 +210,22 @@ def complemento_inverso(dna_seq):
         complemento += mapa[base]
     return complemento[::-1]
 
-def get_orfs(dna): 
+
+codao_stop = {"TAA", "TAG", "TGA"}
+
+def encontra_codao_stop:
+    for j in range(start_index, len(seq) -2,3):
+        if seq[j:j+3] in codao_stop:
+            return seq[start_index:j+3]
+
+def get_orfs(dna):
     if not isinstance(dna, str):
         return []
-
     seq = dna.upper().replace(" ", "").replace("\n", "")
-    codao_stop = {"TAA", "TAG", "TGA"}
     orfs = []
-
-    for i in range(0, len(seq) - 2, 3):
-        if seq[i:i+3] != "ATG":
-            continue
-
-        for j in range(i, len(seq) - 2, 3):
-            if seq[j:j+3] in codao_stop:
-                orfs.append(seq[i:j+3])
-                break
-
+    for i in range(0, len(seq) - 2,3):
+        if seq[i:i+3] == "ATG":
+            orf = encontra_codao_stop(seq,i)
+            if orf:
+                orfs.append(orf)
     return orfs
