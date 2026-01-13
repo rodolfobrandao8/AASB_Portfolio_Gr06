@@ -67,18 +67,29 @@ class TestSequenciasTamanho1(unittest.TestCase):
         self.assertEqual(sequencias.reverso("G"), "G")
         self.assertEqual(sequencias.complemento_inverso("C"), "G")
 
-class TestGetORFs(unittest.TestCase): 
+class TestEncontraCodaoStop(unittest.TestCase):
+    def test_encontra_stop(self):
+        seq = "ATGAAATAGCCC"
+        resultado = encontra_codao_stop(seq,0)
+        self.assertIsNone(resultado)
+    def test_sem_stop(self):
+        seq = "ATGAAAAAACCC"
+        resultado = encontra_codao_stop(seq,0)
+        self.assertIsNone(resultado)
 
-    def test_get_orfs(self):
-        casos = [
-            ("ATGAAATAG", ["ATGAAATAG"]),             
-            ("AAACCCGGG", []),                       
-            ("ATGAAATAGATGCCCTAA", ["ATGAAATAG", "ATGCCCTAA"])  
-        ]
-
-        for dna, esperado in casos:
-            self.assertEqual(get_orfs(dna), esperado)
+class TestGetOrfs(unittest.TestCase):
+    def test_orf_simples(self):
+        dna = "ATGAAATAG"
+        self.assertEqual(get_orfs(dna),["ATGAAATAG"])
+    def test_multi_orfs(self):
+        self.assertEqual(get_orfs(dna), ["ATGAAATAG", "ATGTTTTAA"])
+    def test_sem_orfs(self):
+        dna = "AAACCCGGG"
+        self.assertEqual(get_orfs(dna),[])
+    def test_input_invalido(self):
+        self.assertEqual(get_orfs(123),[])
 
 if __name__ == "__main__":
     unittest.main()
+
 
