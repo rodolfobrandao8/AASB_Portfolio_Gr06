@@ -211,15 +211,13 @@ def complemento_inverso(dna_seq):
     return complemento[::-1]
 
 
+
 codao_stop = {"TAA", "TAG", "TGA"}
-
-
 
 def encontra_codao_stop(seq,start_index):
     for j in range(start_index, len(seq) -2,3):
         if seq[j:j+3] in codao_stop:
             return seq[start_index:j+3]
-
 
 
 def get_orfs(dna):
@@ -233,4 +231,5 @@ def get_orfs(dna):
             if orf:
                 orfs.append(orf)
     return orfs
+
 
