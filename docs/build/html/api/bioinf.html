@@ -14,8 +14,8 @@
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=f2a433a1"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -78,7 +78,7 @@
 <span id="bioinf-alinhamento-module"></span><h2>bioinf.alinhamento module<a class="headerlink" href="#module-bioinf.alinhamento" title="Link to this heading"></a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="bioinf.alinhamento.BLOSUM62">
-<span class="sig-prename descclassname"><span class="pre">bioinf.alinhamento.</span></span><span class="sig-name descname"><span class="pre">BLOSUM62</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'A':</span> <span class="pre">{'A':</span> <span class="pre">4,</span> <span class="pre">'C':</span> <span class="pre">0,</span> <span class="pre">'G':</span> <span class="pre">0,</span> <span class="pre">'T':</span> <span class="pre">0},</span> <span class="pre">'C':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">9,</span> <span class="pre">'G':</span> <span class="pre">-3,</span> <span class="pre">'T':</span> <span class="pre">-1},</span> <span class="pre">'G':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">-3,</span> <span class="pre">'G':</span> <span class="pre">6,</span> <span class="pre">'T':</span> <span class="pre">-2},</span> <span class="pre">'T':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">-1,</span> <span class="pre">'G':</span> <span class="pre">-2,</span> <span class="pre">'T':</span> <span class="pre">5}}</span></em><a class="headerlink" href="#bioinf.alinhamento.BLOSUM62" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">bioinf.alinhamento.</span></span><span class="sig-name descname"><span class="pre">BLOSUM62</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'A':</span> <span class="pre">{'A':</span> <span class="pre">4,</span> <span class="pre">'C':</span> <span class="pre">0,</span> <span class="pre">'G':</span> <span class="pre">0,</span> <span class="pre">'T':</span> <span class="pre">0},</span> <span class="pre">'C':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">9,</span> <span class="pre">'G':</span> <span class="pre">-3,</span> <span class="pre">'T':</span> <span class="pre">-1},</span> <span class="pre">'G':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">-3,</span> <span class="pre">'G':</span> <span class="pre">6,</span> <span class="pre">'T':</span> <span class="pre">-2},</span> <span class="pre">'T':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">-1,</span> <span class="pre">'G':</span> <span class="pre">-2,</span> <span class="pre">'T':</span> <span class="pre">5}}</span></span><a class="headerlink" href="#bioinf.alinhamento.BLOSUM62" title="Link to this definition"></a></dt>
 <dd><p>Matriz de substituição usada por omissão nas funções de alinhamento.</p>
 <dl class="simple">
 <dt>Nota:</dt><dd><p>Apesar do nome <code class="docutils literal notranslate"><span class="pre">BLOSUM62</span></code>, esta matriz é definida apenas para o alfabeto
@@ -99,7 +99,7 @@ funções que acedem a esta matriz podem levantar <code class="docutils literal 
 <dd><p>Realiza um alinhamento múltiplo “progressivo” simplificado.</p>
 <dl class="simple">
 <dt>Estratégia implementada:</dt><dd><ul class="simple">
-<li><p>Inicializa cada sequência como um alinhamento “unitário”.</p></li>
+<li><p>Inicia cada sequência como um alinhamento “unitário”.</p></li>
 <li><p>Repetidamente, escolhe o par com melhor score de Needleman–Wunsch
 (aplicado às strings representativas atuais) e junta-o num alinhamento
 de 2 sequências.</p></li>
