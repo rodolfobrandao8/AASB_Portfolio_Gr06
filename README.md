@@ -50,10 +50,17 @@ Este portefólio inclui implementações dos seguintes tópicos:
 ```bash
 from bioinf import sequencias
 
-dna = "ATGCGT"
-print(sequencias.validar_dna(dna))       # True
-print(sequencias.transcricao(dna))       # AUGCGU
-print(sequencias.complemento_inverso(dna)) # ACGCAT
+# Validação
+sequencias.validar_dna("ACGT")       # True
+sequencias.validar_rna("ACGU")       # True
+sequencias.validar_proteina("ACDE")  # True
+
+# Transcrição e complementos
+rna = sequencias.transcricao("ACGT")            # ACGU
+comp = sequencias.complemento("ACGT")          # TGCA
+rev = sequencias.reverso("ACGT")               # TGCA
+comp_inv = sequencias.complemento_inverso("ACGT") # ACGT
+
 
 
 ```
@@ -65,8 +72,28 @@ from bioinf import alinhamento
 
 seq1 = "ACGT"
 seq2 = "AGT"
+
+# Alinhamento global (Needleman-Wunsch)
 a1, a2, score = alinhamento.needleman_wunsch(seq1, seq2)
-print(a1, a2, score)
+print("Global:", a1, a2, score)
+
+# Alinhamento local (Smith-Waterman)
+a1, a2, score = alinhamento.smith_waterman(seq1, seq2)
+print("Local:", a1, a2, score)
+
+# Alinhamento múltiplo
+seqs = ["ACGT", "AGT", "ACG"]
+alns, consenso = alinhamento.alinhamento_multiplo(seqs)
+print("Múltiplo:", alns, "Consenso:", consenso)
+
+# Dot plot
+dot = alinhamento.dot_plot(seq1, seq2)
+print("Dot plot:", dot)
+
+# Consenso de múltiplas sequências
+cons = alinhamento.consenso_multiplas(["ACG", "AGG", "ACG"])
+print("Consenso:", cons)
+
 
 
 ```
@@ -76,10 +103,12 @@ print(a1, a2, score)
 ```bash
 from bioinf import blast
 
-query = "ATGC"
-target = "TATGCATG"
-sub_q, sub_t, score, pos = blast.blast_simplificado(query, target)
-print(sub_q, sub_t, score, pos)
+query = "ACGTAC"
+seq_alvo = "TTACGTACGG"
+
+sub_q, sub_t, score, start = blast.blast_simplificado(query, seq_alvo)
+print(sub_q, sub_t, score, start)
+
 
 
 ```
@@ -88,9 +117,20 @@ print(sub_q, sub_t, score, pos)
 ```bash
 from bioinf import filogenia
 
-seqs = ["ATG", "ATC", "AGC"]
-tree = filogenia.upgma(seqs)
-print(tree)
+seqs = ["ACGT", "AGT", "ACG"]
+
+# Distância de Levenshtein
+d = filogenia.distancia_levenshtein("ACGT", "AGT")
+print("Distância:", d)
+
+# Matriz de distâncias
+matriz = filogenia.matriz_distancias(seqs)
+print("Matriz de distâncias:", matriz)
+
+# Árvore filogenética simplificada (UPGMA)
+arvore = filogenia.upgma(seqs)
+print("Árvore:", arvore)
+
 
 ```
 ## Motifs.py
@@ -98,10 +138,24 @@ print(tree)
 ```bash
 from bioinf import motifs
 
-seq = "ATGCGATG"
-pattern = "A-x-G"
-positions = motifs.procurar_motifs(seq, pattern)
-print(positions)
+# PROSITE → regex
+regex = motifs.prosite_para_regex("A-x-{C}-G(2,3)")
+
+# Procurar motifs
+posicoes = motifs.procurar_motifs("ATGCGATG", "ATG")
+print("Posições:", posicoes)
+
+# Fragmentação de DNA
+fragmentos, cortes = motifs.fragmentar_dna("GAATTCCGAATT", "G^AATTC")
+print("Fragmentos:", fragmentos, "Cortes:", cortes)
+
+# PWM/PSSM
+seqs = ["ACG", "ACG"]
+pwm = motifs.criar_pwm(seqs)
+pos, sub, prob = motifs.subsequencia_mais_provavel(pwm, "TTACGTT")
+pssm = motifs.pwm_para_pssm(pwm)
+score = motifs.score_seq_pssm(pssm, "ACG")
+
 
 
 
