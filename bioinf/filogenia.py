@@ -1,6 +1,7 @@
-
 def distancia_levenshtein(seq1, seq2):
-    """Calcula a distância de edição entre duas strings."""
+    """
+    Calcula a distância de edição (Levenshtein) entre duas strings.
+    """
     rows = len(seq1) + 1
     cols = len(seq2) + 1
     matriz = [[0]*cols for _ in range(rows)]
@@ -23,7 +24,9 @@ def distancia_levenshtein(seq1, seq2):
 
 
 def matriz_distancias(seqs):
-    """Constrói matriz de distâncias par-a-par."""
+    """
+    Constrói a matriz de distâncias par-a-par entre sequências.
+    """
     matriz = {}
     for i in range(len(seqs)):
         for j in range(i + 1, len(seqs)):
@@ -33,12 +36,10 @@ def matriz_distancias(seqs):
     return matriz
 
 
-
 def upgma(seqs):
     """
-    UPGMA simplificado:
-    - usa matriz de distâncias
-    - distância entre clusters = média das distâncias
+    Constrói uma árvore filogenética simplificada usando UPGMA.
+    A distância entre clusters é a média das distâncias entre as sequências.
     """
     clusters = {s: [s] for s in seqs}
     dist = matriz_distancias(seqs)
@@ -53,7 +54,6 @@ def upgma(seqs):
             for j in range(i + 1, len(keys)):
                 c1, c2 = keys[i], keys[j]
 
-                # média das distâncias entre todos os elementos dos clusters
                 dists = [
                     dist[(s1, s2)]
                     for s1 in clusters[c1]

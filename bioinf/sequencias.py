@@ -1,8 +1,8 @@
-# =========================
-# Validação de sequências
-# =========================
-
 def validar_dna(seq):
+    """
+    Valida se uma sequência contém apenas nucleótidos de DNA (A, C, G, T).
+    Retorna True se válido, False caso contrário.
+    """
     if not seq:
         return False
     seq = seq.upper()
@@ -10,6 +10,10 @@ def validar_dna(seq):
 
 
 def validar_rna(seq):
+    """
+    Valida se uma sequência contém apenas nucleótidos de RNA (A, C, G, U).
+    Retorna True se válido, False caso contrário.
+    """
     if not seq:
         return False
     seq = seq.upper()
@@ -17,6 +21,10 @@ def validar_rna(seq):
 
 
 def validar_proteina(seq):
+    """
+    Valida se uma sequência contém apenas aminoácidos válidos (20 aminoácidos padrão).
+    Retorna True se válido, False caso contrário.
+    """
     if not seq:
         return False
     seq = seq.upper()
@@ -27,21 +35,21 @@ def validar_proteina(seq):
     return set(seq).issubset(aminoacidos)
 
 
-# =========================
-# Transcrição
-# =========================
-
 def transcricao(dna_seq):
+    """
+    Transcreve uma sequência de DNA para RNA (T → U).
+    Retorna a sequência de RNA correspondente, ou string vazia se não for DNA válido.
+    """
     if not validar_dna(dna_seq):
         return ""
     return dna_seq.upper().replace('T', 'U')
 
 
-# =========================
-# Operações com DNA
-# =========================
-
 def complemento(dna_seq):
+    """
+    Retorna o complemento de uma sequência de DNA.
+    Retorna string vazia se não for DNA válido.
+    """
     if not validar_dna(dna_seq):
         return ""
         
@@ -53,12 +61,20 @@ def complemento(dna_seq):
 
 
 def reverso(seq):
+    """
+    Retorna a sequência invertida.
+    Retorna string vazia se a sequência estiver vazia.
+    """
     if not seq:
         return ""
     return seq[::-1]
 
 
 def complemento_inverso(dna_seq):
+    """
+    Retorna o complemento reverso de uma sequência de DNA (5' → 3').
+    Retorna string vazia se não for DNA válido.
+    """
     if not validar_dna(dna_seq):
         return ""
         
@@ -67,7 +83,3 @@ def complemento_inverso(dna_seq):
     for base in dna_seq.upper():
         complemento += mapa[base]
     return complemento[::-1]
-
-
-dna = "ATGCCGTA"
-print(validar_dna(dna))

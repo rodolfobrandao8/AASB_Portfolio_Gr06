@@ -1,10 +1,9 @@
 def blast_simplificado(query, seq_alvo, w=3, match=2, mismatch=-1):
     """
-    BLAST simplificado:
-    1. Query map (k-mers)
-    2. Identificação de hits
-    3. Extensão
-    4. Melhor alinhamento local (HSP)
+    Executa um BLAST simplificado:
+    - Cria query map (k-mers)
+    - Identifica hits
+    - Estende hits para melhor alinhamento local (HSP)
     """
     mapa_query = construir_mapa(query, w)
     hits = encontrar_hits(seq_alvo, mapa_query, w)
@@ -12,7 +11,7 @@ def blast_simplificado(query, seq_alvo, w=3, match=2, mismatch=-1):
     if not hits:
         return "", "", 0, -1
 
-    melhor_hsp = (0, 0, 0, 0)  # score, q_start, t_start, length
+    melhor_hsp = (0, 0, 0, 0)
 
     for hit in hits:
         hsp = estender_hit(query, seq_alvo, hit, w, match, mismatch)
@@ -27,7 +26,9 @@ def blast_simplificado(query, seq_alvo, w=3, match=2, mismatch=-1):
 
 
 def construir_mapa(query, w):
-    """Cria o query map: {k-mer: [posições]}"""
+    """
+    Cria um mapa da query ({k-mer: posições}) para identificação de hits.
+    """
     mapa = {}
     for i in range(len(query) - w + 1):
         palavra = query[i:i+w]
@@ -36,7 +37,9 @@ def construir_mapa(query, w):
 
 
 def encontrar_hits(seq, mapa, w):
-    """Identifica hits entre query map e sequência alvo"""
+    """
+    Identifica hits entre o query map e a sequência alvo.
+    """
     hits = []
     for i in range(len(seq) - w + 1):
         palavra = seq[i:i+w]
@@ -48,28 +51,45 @@ def encontrar_hits(seq, mapa, w):
 
 def estender_hit(query, seq, hit, w, match, mismatch):
     """
-    Extensão de um hit para esquerda e direita (HSP)
-    com critério de drop-off simples
+    Estende um hit para esquerda e direita para encontrar HSP.
+    Complexidade reduzida para B ou A no Radon.
     """
-    q_start, t_start = hit
-    q_end = q_start + w
-    t_end = t_start + w
+    def extender(direcao):
+        score = w * match
+        best_score = score
+        best_start_q = hit[0]
+        best_start_t = hit[1]
+        best_len = w
 
-    score_atual = w * match
-    max_score = score_atual
+        if direcao == "esquerda":
+            i, j = hit[0] - 1, hit[1] - 1
+            passo = -1
+        else:  
+            i, j = hit[0] + w, hit[1] + w
+            passo = 1
 
-    best_q_start = q_start
-    best_t_start = t_start
-    best_len = w
+        while 0 <= i < len(query) and 0 <= j < len(seq):
+            score += match if query[i] == seq[j] else mismatch
+            if score > best_score:
+                best_score = score
+                if direcao == "esquerda":
+                    best_start_q = i
+                    best_start_t = j
+                    best_len = (hit[0] + w) - i
+                else:
+                    best_len = i - best_start_q + 1
+            elif score < best_score / 2:
+                break
+            i += passo
+            j += passo
 
-    # Extensão à esquerda
-    i, j = q_start - 1, t_start - 1
-    temp_score = score_atual
+        return best_score, best_start_q, best_start_t, best_len
 
-    while i >= 0 and j >= 0:
-        temp_score += match if query[i] == seq[j] else mismatch
 
-        if temp_score > max_score:
-            max_score = temp_score
-            best_q_start = i
-            best_t_start = j
+    score_esq, q_start, t_start, length = extender("esquerda")
+
+    score_dir, _, _, length = extender("direita")
+ 
+    max_score = max(score_esq, score_dir)
+    return max_score, q_start, t_start, length
+
