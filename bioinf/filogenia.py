@@ -1,6 +1,30 @@
 def distancia_levenshtein(seq1, seq2):
-    """
-    Calcula a distância de edição (Levenshtein) entre duas strings.
+    """Calcula a distância de edição (Levenshtein) entre duas strings.
+
+    A distância de Levenshtein é o número mínimo de operações para transformar
+    ``seq1`` em ``seq2``, onde as operações permitidas são:
+    - inserção,
+    - deleção,
+    - substituição.
+
+    Implementação por programação dinâmica com matriz de dimensão
+    ``(len(seq1)+1) x (len(seq2)+1)``.
+
+    Args:
+        seq1 (str): Primeira string/sequência.
+        seq2 (str): Segunda string/sequência.
+
+    Returns:
+        int: Distância de Levenshtein entre ``seq1`` e ``seq2``.
+
+    Raises:
+        TypeError: Se ``seq1`` ou ``seq2`` não forem strings (ou não suportarem ``len`` e indexação).
+
+    Examples:
+        >>> distancia_levenshtein("GATTACA", "GATTTCA")
+        1
+        >>> distancia_levenshtein("", "ABC")
+        3
     """
     rows = len(seq1) + 1
     cols = len(seq2) + 1
@@ -24,8 +48,30 @@ def distancia_levenshtein(seq1, seq2):
 
 
 def matriz_distancias(seqs):
-    """
-    Constrói a matriz de distâncias par-a-par entre sequências.
+    """Constrói uma matriz de distâncias par-a-par para um conjunto de sequências.
+
+    A distância usada é a distância de Levenshtein calculada por
+    :func:`distancia_levenshtein`.
+
+    A matriz é representada como um dicionário com chaves ``(seq_i, seq_j)``.
+    O resultado inclui entradas simétricas, isto é, guarda (i,j) e (j,i).
+
+    Args:
+        seqs (list[str]): Lista de sequências/strings.
+
+    Returns:
+        dict[tuple[str, str], int]: Dicionário com as distâncias par-a-par.
+
+    Raises:
+        TypeError: Se ``seqs`` não for iterável.
+        ValueError: Se ``seqs`` tiver menos de 2 sequências (a matriz ficará vazia).
+
+    Examples:
+        >>> m = matriz_distancias(["AA", "AB", "BB"])
+        >>> m[("AA", "AB")]
+        1
+        >>> m[("AB", "AA")]
+        1
     """
     matriz = {}
     for i in range(len(seqs)):
@@ -37,9 +83,36 @@ def matriz_distancias(seqs):
 
 
 def upgma(seqs):
-    """
-    Constrói uma árvore filogenética simplificada usando UPGMA.
-    A distância entre clusters é a média das distâncias entre as sequências.
+    """Constrói uma árvore filogenética simplificada usando UPGMA.
+
+    UPGMA (Unweighted Pair Group Method with Arithmetic Mean) é um método de
+    clustering hierárquico que, a cada iteração:
+    - escolhe o par de clusters com menor distância média,
+    - funde-os num novo cluster,
+    - repete até existir um único cluster.
+
+    Nesta implementação:
+    - a distância base entre sequências é Levenshtein,
+    - a distância entre clusters é a média das distâncias entre todas as pares
+      de sequências (um de cada cluster),
+    - a árvore devolvida é uma estrutura de tuplos aninhados (ex.: ``('A', ('B','C'))``),
+      não um objeto com comprimentos de ramos.
+
+    Args:
+        seqs (list[str]): Lista de sequências/strings a agrupar.
+
+    Returns:
+        object: Raiz da árvore (cluster final), representada como:
+        - uma string (se só houver uma sequência), ou
+        - um tuplo ``(cluster1, cluster2)`` recursivamente.
+
+    Raises:
+        IndexError: Se ``seqs`` estiver vazio (o código assume pelo menos 1 sequência).
+        TypeError: Se ``seqs`` não for iterável.
+
+    Examples:
+        >>> upgma(["AA", "AB", "BB"])
+        (('AA', 'AB'), 'BB')
     """
     clusters = {s: [s] for s in seqs}
     dist = matriz_distancias(seqs)
@@ -73,3 +146,4 @@ def upgma(seqs):
         del clusters[c2]
 
     return list(clusters.keys())[0]
+
