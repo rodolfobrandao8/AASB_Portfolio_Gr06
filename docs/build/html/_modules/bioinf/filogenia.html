@@ -72,8 +72,32 @@
 <div class="viewcode-block" id="distancia_levenshtein">
 <a class="viewcode-back" href="../../modules.html#bioinf.filogenia.distancia_levenshtein">[docs]</a>
 <span></span><span class="k">def</span><span class="w"> </span><span class="nf">distancia_levenshtein</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calcula a distância de edição (Levenshtein) entre duas strings.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calcula a distância de edição (Levenshtein) entre duas strings.</span>
+
+<span class="sd">    A distância de Levenshtein é o número mínimo de operações para transformar</span>
+<span class="sd">    ``seq1`` em ``seq2``, onde as operações permitidas são:</span>
+<span class="sd">    - inserção,</span>
+<span class="sd">    - deleção,</span>
+<span class="sd">    - substituição.</span>
+
+<span class="sd">    Implementação por programação dinâmica com matriz de dimensão</span>
+<span class="sd">    ``(len(seq1)+1) x (len(seq2)+1)``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq1 (str): Primeira string/sequência.</span>
+<span class="sd">        seq2 (str): Segunda string/sequência.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: Distância de Levenshtein entre ``seq1`` e ``seq2``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: Se ``seq1`` ou ``seq2`` não forem strings (ou não suportarem ``len`` e indexação).</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; distancia_levenshtein(&quot;GATTACA&quot;, &quot;GATTTCA&quot;)</span>
+<span class="sd">        1</span>
+<span class="sd">        &gt;&gt;&gt; distancia_levenshtein(&quot;&quot;, &quot;ABC&quot;)</span>
+<span class="sd">        3</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="n">cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
@@ -100,8 +124,30 @@
 <div class="viewcode-block" id="matriz_distancias">
 <a class="viewcode-back" href="../../modules.html#bioinf.filogenia.matriz_distancias">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">matriz_distancias</span><span class="p">(</span><span class="n">seqs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Constrói a matriz de distâncias par-a-par entre sequências.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Constrói uma matriz de distâncias par-a-par para um conjunto de sequências.</span>
+
+<span class="sd">    A distância usada é a distância de Levenshtein calculada por</span>
+<span class="sd">    :func:`distancia_levenshtein`.</span>
+
+<span class="sd">    A matriz é representada como um dicionário com chaves ``(seq_i, seq_j)``.</span>
+<span class="sd">    O resultado inclui entradas simétricas, isto é, guarda (i,j) e (j,i).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seqs (list[str]): Lista de sequências/strings.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict[tuple[str, str], int]: Dicionário com as distâncias par-a-par.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: Se ``seqs`` não for iterável.</span>
+<span class="sd">        ValueError: Se ``seqs`` tiver menos de 2 sequências (a matriz ficará vazia).</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; m = matriz_distancias([&quot;AA&quot;, &quot;AB&quot;, &quot;BB&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; m[(&quot;AA&quot;, &quot;AB&quot;)]</span>
+<span class="sd">        1</span>
+<span class="sd">        &gt;&gt;&gt; m[(&quot;AB&quot;, &quot;AA&quot;)]</span>
+<span class="sd">        1</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">matriz</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seqs</span><span class="p">)):</span>
@@ -116,9 +162,36 @@
 <div class="viewcode-block" id="upgma">
 <a class="viewcode-back" href="../../modules.html#bioinf.filogenia.upgma">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">upgma</span><span class="p">(</span><span class="n">seqs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Constrói uma árvore filogenética simplificada usando UPGMA.</span>
-<span class="sd">    A distância entre clusters é a média das distâncias entre as sequências.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Constrói uma árvore filogenética simplificada usando UPGMA.</span>
+
+<span class="sd">    UPGMA (Unweighted Pair Group Method with Arithmetic Mean) é um método de</span>
+<span class="sd">    clustering hierárquico que, a cada iteração:</span>
+<span class="sd">    - escolhe o par de clusters com menor distância média,</span>
+<span class="sd">    - funde-os num novo cluster,</span>
+<span class="sd">    - repete até existir um único cluster.</span>
+
+<span class="sd">    Nesta implementação:</span>
+<span class="sd">    - a distância base entre sequências é Levenshtein,</span>
+<span class="sd">    - a distância entre clusters é a média das distâncias entre todas as pares</span>
+<span class="sd">      de sequências (um de cada cluster),</span>
+<span class="sd">    - a árvore devolvida é uma estrutura de tuplos aninhados (ex.: ``(&#39;A&#39;, (&#39;B&#39;,&#39;C&#39;))``),</span>
+<span class="sd">      não um objeto com comprimentos de ramos.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seqs (list[str]): Lista de sequências/strings a agrupar.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        object: Raiz da árvore (cluster final), representada como:</span>
+<span class="sd">        - uma string (se só houver uma sequência), ou</span>
+<span class="sd">        - um tuplo ``(cluster1, cluster2)`` recursivamente.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        IndexError: Se ``seqs`` estiver vazio (o código assume pelo menos 1 sequência).</span>
+<span class="sd">        TypeError: Se ``seqs`` não for iterável.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; upgma([&quot;AA&quot;, &quot;AB&quot;, &quot;BB&quot;])</span>
+<span class="sd">        ((&#39;AA&#39;, &#39;AB&#39;), &#39;BB&#39;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">clusters</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">seqs</span><span class="p">}</span>
     <span class="n">dist</span> <span class="o">=</span> <span class="n">matriz_distancias</span><span class="p">(</span><span class="n">seqs</span><span class="p">)</span>
@@ -152,6 +225,7 @@
         <span class="k">del</span> <span class="n">clusters</span><span class="p">[</span><span class="n">c2</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">clusters</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span></div>
+
 
 </pre></div>
 

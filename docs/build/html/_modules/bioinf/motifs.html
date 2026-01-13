@@ -76,9 +76,32 @@
 <div class="viewcode-block" id="prosite_para_regex">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.prosite_para_regex">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">prosite_para_regex</span><span class="p">(</span><span class="n">padrao</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converte um padrão PROSITE para expressão regular.</span>
-<span class="sd">    Suporta x, { }, (n), (n,m), &lt; &gt;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converte um padrão PROSITE para uma expressão regular (regex) equivalente.</span>
+
+<span class="sd">    Implementa uma conversão simples para suportar construções comuns de PROSITE:</span>
+<span class="sd">    - ``-`` (separador) é removido;</span>
+<span class="sd">    - ``x`` vira ``.`` (qualquer carácter);</span>
+<span class="sd">    - ``{...}`` vira classe negada ``[^...]``;</span>
+<span class="sd">    - ``(n)`` e ``(n,m)`` viram quantificadores regex ``{n}`` e ``{n,m}``;</span>
+<span class="sd">    - ``&lt;`` no início ancora ao início da string (``^``);</span>
+<span class="sd">    - ``&gt;`` no fim ancora ao fim da string (``$``).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        padrao (str): Padrão PROSITE (ex.: ``&quot;C-x(2)-C&quot;``).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Expressão regular compatível com o módulo :mod:`re`.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: Se ``padrao`` não for string.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; prosite_para_regex(&quot;C-x(2)-C&quot;)</span>
+<span class="sd">        &#39;C.{2}C&#39;</span>
+<span class="sd">        &gt;&gt;&gt; prosite_para_regex(&quot;&lt;A-x(3)-G&gt;&quot;)</span>
+<span class="sd">        &#39;^A.{3}G$&#39;</span>
+<span class="sd">        &gt;&gt;&gt; prosite_para_regex(&quot;C-{GP}-x-C&quot;)</span>
+<span class="sd">        &#39;C[^GP].C&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">regex</span> <span class="o">=</span> <span class="n">padrao</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">regex</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
@@ -99,8 +122,25 @@
 <div class="viewcode-block" id="procurar_motifs">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.procurar_motifs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">procurar_motifs</span><span class="p">(</span><span class="n">sequencia</span><span class="p">,</span> <span class="n">padrao_prosite</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Procura posições de motifs na sequência usando padrão PROSITE.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Procura ocorrências de um motif PROSITE numa sequência.</span>
+
+<span class="sd">    Converte o padrão PROSITE para regex (via :func:`prosite_para_regex`) e usa</span>
+<span class="sd">    :func:`re.finditer` para obter as posições iniciais (0-based) de cada match.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sequencia (str): Sequência onde procurar (DNA/RNA/proteína, dependendo do padrão).</span>
+<span class="sd">        padrao_prosite (str): Padrão no formato PROSITE.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[int]: Lista de posições iniciais (0-based) onde o motif ocorre.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        re.error: Se o padrão convertido gerar uma regex inválida.</span>
+<span class="sd">        TypeError: Se os argumentos não forem strings.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; procurar_motifs(&quot;ACCCAC&quot;, &quot;C-x(2)-C&quot;)</span>
+<span class="sd">        [1]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">regex</span> <span class="o">=</span> <span class="n">prosite_para_regex</span><span class="p">(</span><span class="n">padrao_prosite</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">sequencia</span><span class="p">)]</span></div>
@@ -110,24 +150,71 @@
 <div class="viewcode-block" id="enzima_para_regex">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.enzima_para_regex">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">enzima_para_regex</span><span class="p">(</span><span class="n">sitio</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converte sítio de enzima (ex: G^AATTC) em sequência e posição de corte.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Interpreta um sítio de restrição com marca de corte.</span>
+
+<span class="sd">    Recebe uma string com o símbolo ``^`` a indicar a posição de corte</span>
+<span class="sd">    (ex.: ``&quot;G^AATTC&quot;``) e devolve:</span>
+<span class="sd">    - a sequência do sítio sem ``^``,</span>
+<span class="sd">    - a posição de corte relativa ao início do sítio (0-based).</span>
+
+<span class="sd">    Nota:</span>
+<span class="sd">        Apesar do nome, esta função **não** converte códigos de ambiguidade para</span>
+<span class="sd">        regex; devolve apenas a sequência literal e o índice do corte.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sitio (str): Sítio de enzima com ``^`` (ex.: ``&quot;G^AATTC&quot;``).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[str, int]: ``(seq, corte)``, onde:</span>
+<span class="sd">        - ``seq`` é o sítio sem ``^``,</span>
+<span class="sd">        - ``corte`` é o índice (0-based) em ``seq`` onde ocorre o corte.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: Se ``&#39;^&#39;`` não existir em ``sitio`` (por causa de ``index``).</span>
+<span class="sd">        TypeError: Se ``sitio`` não for string.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; enzima_para_regex(&quot;G^AATTC&quot;)</span>
+<span class="sd">        (&#39;GAATTC&#39;, 1)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">corte</span> <span class="o">=</span> <span class="n">sitio</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">)</span>
     <span class="n">seq</span> <span class="o">=</span> <span class="n">sitio</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">seq</span><span class="p">,</span> <span class="n">corte</span></div>
 
 
+
 <div class="viewcode-block" id="fragmentar_dna">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.fragmentar_dna">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">fragmentar_dna</span><span class="p">(</span><span class="n">sequencia</span><span class="p">,</span> <span class="n">sitio_enzima</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Fragmenta uma sequência de DNA com base num sítio de enzima de restrição.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fragmenta uma sequência de DNA com base num sítio de restrição.</span>
+
+<span class="sd">    O processo é:</span>
+<span class="sd">    1) Extrair o padrão do sítio e a posição de corte (via :func:`enzima_para_regex`).</span>
+<span class="sd">    2) Encontrar todas as ocorrências do padrão na sequência (como *match literal*).</span>
+<span class="sd">    3) Gerar as posições de corte (offset + corte) e devolver os fragmentos.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sequencia (str): Sequência de DNA a fragmentar.</span>
+<span class="sd">        sitio_enzima (str): Sítio com marca de corte ``^`` (ex.: ``&quot;G^AATTC&quot;``).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[list[str], list[int]]: ``(fragmentos, cortes)``, onde:</span>
+<span class="sd">        - ``fragmentos`` é a lista de fragmentos resultantes (strings),</span>
+<span class="sd">        - ``cortes`` é a lista de posições de corte (0-based) na sequência original.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: Se ``sitio_enzima`` não contiver ``^``.</span>
+<span class="sd">        re.error: Se o padrão produzir um erro de regex (pouco provável aqui porque é literal).</span>
+<span class="sd">        TypeError: Se os argumentos não forem strings.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; fragmentar_dna(&quot;TTGAATTCAA&quot;, &quot;G^AATTC&quot;)</span>
+<span class="sd">        ([&#39;TTG&#39;, &#39;AATTCAA&#39;], [3])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">padrao</span><span class="p">,</span> <span class="n">corte</span> <span class="o">=</span> <span class="n">enzima_para_regex</span><span class="p">(</span><span class="n">sitio_enzima</span><span class="p">)</span>
     <span class="n">posicoes</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">padrao</span><span class="p">,</span> <span class="n">sequencia</span><span class="p">)]</span>
-
     <span class="n">cortes</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="o">+</span> <span class="n">corte</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">posicoes</span><span class="p">]</span>
+
     <span class="n">fragmentos</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">inicio</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -135,19 +222,40 @@
         <span class="n">fragmentos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sequencia</span><span class="p">[</span><span class="n">inicio</span><span class="p">:</span><span class="n">c</span><span class="p">])</span>
         <span class="n">inicio</span> <span class="o">=</span> <span class="n">c</span>
 
-    <span class="c1"># Adiciona o fragmento restante, mesmo que vazio</span>
-    <span class="n">fragmentos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sequencia</span><span class="p">[</span><span class="n">inicio</span><span class="p">:])</span>
+    <span class="n">fragmentos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sequencia</span><span class="p">[</span><span class="n">inicio</span><span class="p">:]</span> <span class="k">if</span> <span class="n">inicio</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">sequencia</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">fragmentos</span><span class="p">,</span> <span class="n">cortes</span></div>
-
 
 
 
 <div class="viewcode-block" id="criar_pwm">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.criar_pwm">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">criar_pwm</span><span class="p">(</span><span class="n">lista_seqs</span><span class="p">,</span> <span class="n">pseudocount</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Cria uma PWM a partir de uma lista de sequências.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cria uma PWM (Position Weight Matrix) a partir de uma lista de sequências.</span>
+
+<span class="sd">    Esta implementação assume:</span>
+<span class="sd">    - alfabeto fixo ``&quot;ACGT&quot;``;</span>
+<span class="sd">    - todas as sequências têm o mesmo comprimento (usa o comprimento da primeira);</span>
+<span class="sd">    - aplica pseudocounts para evitar probabilidades zero.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        lista_seqs (list[str]): Lista de sequências (mesmo comprimento).</span>
+<span class="sd">        pseudocount (int, optional): Valor inicial somado às contagens de cada base</span>
+<span class="sd">            em cada coluna. Por omissão ``1``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[dict[str, float]]: PWM representada como lista de colunas; cada coluna</span>
+<span class="sd">        é um dicionário ``{&#39;A&#39;:pA, &#39;C&#39;:pC, &#39;G&#39;:pG, &#39;T&#39;:pT}``.</span>
+<span class="sd">        Se ``lista_seqs`` estiver vazia, devolve ``[]``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        IndexError: Se existirem sequências com comprimento menor do que a primeira.</span>
+<span class="sd">        KeyError: Se aparecerem símbolos fora de A/C/G/T (ao indexar contagens).</span>
+<span class="sd">        TypeError: Se ``lista_seqs`` não for iterável.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; criar_pwm([&quot;AAA&quot;, &quot;AAT&quot;], pseudocount=1)[2][&quot;A&quot;] &gt; criar_pwm([&quot;AAA&quot;, &quot;AAT&quot;], 1)[2][&quot;T&quot;]</span>
+<span class="sd">        True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">lista_seqs</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
@@ -171,8 +279,27 @@
 <div class="viewcode-block" id="probabilidade_seq_pwm">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.probabilidade_seq_pwm">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">probabilidade_seq_pwm</span><span class="p">(</span><span class="n">pwm</span><span class="p">,</span> <span class="n">sequencia</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calcula a probabilidade de uma sequência gerar a PWM.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calcula a probabilidade de uma sequência segundo uma PWM.</span>
+
+<span class="sd">    A probabilidade é o produto das probabilidades por posição:</span>
+<span class="sd">    ``prod_i PWM[i][base_i]``.</span>
+<span class="sd">    Se uma base não existir na coluna, considera-se probabilidade 0.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pwm (list[dict[str, float]]): PWM no formato devolvido por :func:`criar_pwm`.</span>
+<span class="sd">        sequencia (str): Sequência (tipicamente com comprimento igual ao da PWM).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Probabilidade (pode ser 0.0).</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        IndexError: Se ``sequencia`` for maior do que o comprimento do PWM.</span>
+<span class="sd">        TypeError: Se ``pwm`` não for uma lista de dicionários.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; pwm = criar_pwm([&quot;AAAA&quot;, &quot;AAAT&quot;], pseudocount=1)</span>
+<span class="sd">        &gt;&gt;&gt; probabilidade_seq_pwm(pwm, &quot;AAAA&quot;) &gt;= probabilidade_seq_pwm(pwm, &quot;TTTT&quot;)</span>
+<span class="sd">        True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">prob</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">base</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sequencia</span><span class="p">):</span>
@@ -184,8 +311,31 @@
 <div class="viewcode-block" id="subsequencia_mais_provavel">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.subsequencia_mais_provavel">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">subsequencia_mais_provavel</span><span class="p">(</span><span class="n">pwm</span><span class="p">,</span> <span class="n">sequencia_alvo</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Encontra a subsequência mais provável na sequência alvo com base na PWM.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Encontra a subsequência mais provável numa sequência alvo dada uma PWM.</span>
+
+<span class="sd">    Varre todas as janelas contíguas de tamanho ``len(pwm)`` e calcula a</span>
+<span class="sd">    probabilidade de cada janela com :func:`probabilidade_seq_pwm`, devolvendo</span>
+<span class="sd">    a melhor.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pwm (list[dict[str, float]]): PWM (lista de colunas).</span>
+<span class="sd">        sequencia_alvo (str): Sequência onde procurar (target).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[int, str, float]: ``(pos, subseq, prob)``, onde:</span>
+<span class="sd">        - ``pos`` é a posição inicial (0-based) da melhor subsequência,</span>
+<span class="sd">        - ``subseq`` é a subsequência encontrada,</span>
+<span class="sd">        - ``prob`` é a probabilidade dessa subsequência.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: Se ``pwm`` estiver vazio (o código assume tamanho &gt; 0).</span>
+<span class="sd">        IndexError: Se ``sequencia_alvo`` for menor do que ``len(pwm)``.</span>
+<span class="sd">        TypeError: Se os argumentos forem de tipos inválidos.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; pwm = criar_pwm([&quot;AAA&quot;, &quot;AAT&quot;], pseudocount=1)</span>
+<span class="sd">        &gt;&gt;&gt; subsequencia_mais_provavel(pwm, &quot;TTTAAATTT&quot;)[0]</span>
+<span class="sd">        3</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">tamanho</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwm</span><span class="p">)</span>
     <span class="n">melhor_prob</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
@@ -207,8 +357,31 @@
 <div class="viewcode-block" id="pwm_para_pssm">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.pwm_para_pssm">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pwm_para_pssm</span><span class="p">(</span><span class="n">pwm</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converte PWM em PSSM usando log2 odds.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converte uma PWM numa PSSM usando log2-odds.</span>
+
+<span class="sd">    Para cada posição e base calcula:</span>
+<span class="sd">    ``log2(P(base|posição) / P(base|background))``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pwm (list[dict[str, float]]): PWM (lista de colunas).</span>
+<span class="sd">        bg (dict[str, float] | None, optional): Distribuição de background.</span>
+<span class="sd">            Se ``None``, assume uniforme (0.25 para A/C/G/T).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[dict[str, float]]: PSSM no mesmo formato (lista de colunas), mas com</span>
+<span class="sd">        scores log-odds em vez de probabilidades.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        KeyError: Se ``bg`` não tiver uma base presente no PWM.</span>
+<span class="sd">        ValueError: Se alguma probabilidade for 0 (pode gerar divisão por zero).</span>
+<span class="sd">            (Nota: com pseudocounts &gt; 0 isto é menos provável.)</span>
+<span class="sd">        TypeError: Se ``pwm``/``bg`` forem de tipos inválidos.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; pwm = criar_pwm([&quot;AAAA&quot;, &quot;AAAT&quot;], pseudocount=1)</span>
+<span class="sd">        &gt;&gt;&gt; pssm = pwm_para_pssm(pwm)</span>
+<span class="sd">        &gt;&gt;&gt; isinstance(pssm[0][&quot;A&quot;], float)</span>
+<span class="sd">        True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">bg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">bg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">}</span>
@@ -226,8 +399,28 @@
 <div class="viewcode-block" id="score_seq_pssm">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.score_seq_pssm">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">score_seq_pssm</span><span class="p">(</span><span class="n">pssm</span><span class="p">,</span> <span class="n">sequencia</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calcula o score de uma sequência usando PSSM.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calcula o score total de uma sequência segundo uma PSSM.</span>
+
+<span class="sd">    Soma os scores por posição. Se uma base não existir numa coluna da PSSM,</span>
+<span class="sd">    atribui ``-inf`` a essa posição (via ``-float(&#39;inf&#39;)``), tornando o score final</span>
+<span class="sd">    muito baixo.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pssm (list[dict[str, float]]): PSSM no formato devolvido por :func:`pwm_para_pssm`.</span>
+<span class="sd">        sequencia (str): Sequência a pontuar (tipicamente com comprimento igual ao da PSSM).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Score total (pode ser ``-inf`` se houver bases desconhecidas).</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        IndexError: Se ``sequencia`` for maior do que o comprimento da PSSM.</span>
+<span class="sd">        TypeError: Se ``pssm`` não for uma lista de dicionários.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; pwm = criar_pwm([&quot;AAAA&quot;, &quot;AAAT&quot;], pseudocount=1)</span>
+<span class="sd">        &gt;&gt;&gt; pssm = pwm_para_pssm(pwm)</span>
+<span class="sd">        &gt;&gt;&gt; score_seq_pssm(pssm, &quot;AAAA&quot;) &gt;= score_seq_pssm(pssm, &quot;TTTT&quot;)</span>
+<span class="sd">        True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">base</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sequencia</span><span class="p">):</span>

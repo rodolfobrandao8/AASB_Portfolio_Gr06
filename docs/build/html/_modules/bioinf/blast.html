@@ -72,11 +72,40 @@
 <div class="viewcode-block" id="blast_simplificado">
 <a class="viewcode-back" href="../../modules.html#bioinf.blast.blast_simplificado">[docs]</a>
 <span></span><span class="k">def</span><span class="w"> </span><span class="nf">blast_simplificado</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">seq_alvo</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">match</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mismatch</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Executa um BLAST simplificado:</span>
-<span class="sd">    - Cria query map (k-mers)</span>
-<span class="sd">    - Identifica hits</span>
-<span class="sd">    - Estende hits para melhor alinhamento local (HSP)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Executa um BLAST simplificado (seed-and-extend) entre uma query e uma sequência alvo.</span>
+
+<span class="sd">    Pipeline implementado:</span>
+<span class="sd">    1) Constrói um *query map* com todos os k-mers (tamanho ``w``) da query.</span>
+<span class="sd">    2) Percorre a sequência alvo para encontrar *hits* (k-mers presentes no mapa).</span>
+<span class="sd">    3) Para cada hit, estende à esquerda e à direita para obter um HSP</span>
+<span class="sd">       (High-scoring Segment Pair) e escolhe o melhor.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query (str): Sequência de consulta (query).</span>
+<span class="sd">        seq_alvo (str): Sequência alvo (target/database sequence) onde procurar hits.</span>
+<span class="sd">        w (int, optional): Tamanho da palavra (k-mer) usada como seed. Por omissão ``3``.</span>
+<span class="sd">        match (int, optional): Score atribuído a match durante a extensão. Por omissão ``2``.</span>
+<span class="sd">        mismatch (int, optional): Penalização atribuída a mismatch durante a extensão.</span>
+<span class="sd">            Por omissão ``-1``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[str, str, int, int]:</span>
+<span class="sd">        - sub_q (str): Subsequência da query correspondente ao melhor HSP.</span>
+<span class="sd">        - sub_t (str): Subsequência da sequência alvo correspondente ao melhor HSP.</span>
+<span class="sd">        - score (int): Score do melhor HSP encontrado.</span>
+<span class="sd">        - t_start (int): Posição inicial (0-based) do HSP na sequência alvo.</span>
+<span class="sd">          Se não houver hits, devolve ``-1``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: Se ``w`` for maior do que o comprimento da query (pode levar a</span>
+<span class="sd">            mapa vazio) ou maior do que o comprimento da sequência alvo (sem seeds).</span>
+<span class="sd">            (Nota: o código atual não valida explicitamente; este erro é uma sugestão</span>
+<span class="sd">            de validação para robustez.)</span>
+<span class="sd">        TypeError: Se ``query`` ou ``seq_alvo`` não forem strings.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; blast_simplificado(&quot;ACGTAC&quot;, &quot;TTACGTAA&quot;, w=3)</span>
+<span class="sd">        (&#39;ACG&#39;, &#39;ACG&#39;, 6, 2)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">mapa_query</span> <span class="o">=</span> <span class="n">construir_mapa</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
     <span class="n">hits</span> <span class="o">=</span> <span class="n">encontrar_hits</span><span class="p">(</span><span class="n">seq_alvo</span><span class="p">,</span> <span class="n">mapa_query</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
@@ -102,8 +131,24 @@
 <div class="viewcode-block" id="construir_mapa">
 <a class="viewcode-back" href="../../modules.html#bioinf.blast.construir_mapa">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">construir_mapa</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Cria um mapa da query ({k-mer: posições}) para identificação de hits.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Constrói o *query map* (índice de seeds) para BLAST simplificado.</span>
+
+<span class="sd">    Cria um dicionário onde cada k-mer (tamanho ``w``) da query aponta para uma lista</span>
+<span class="sd">    das posições (0-based) onde esse k-mer ocorre na query.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query (str): Sequência de consulta (query).</span>
+<span class="sd">        w (int): Tamanho do k-mer (seed/word size).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict[str, list[int]]: Dicionário do tipo ``{kmer: [pos1, pos2, ...]}``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: Se ``query`` não for string ou ``w`` não for inteiro.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; construir_mapa(&quot;ACGTA&quot;, 3)</span>
+<span class="sd">        {&#39;ACG&#39;: [0], &#39;CGT&#39;: [1], &#39;GTA&#39;: [2]}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">mapa</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">)</span> <span class="o">-</span> <span class="n">w</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
@@ -116,8 +161,27 @@
 <div class="viewcode-block" id="encontrar_hits">
 <a class="viewcode-back" href="../../modules.html#bioinf.blast.encontrar_hits">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">encontrar_hits</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">mapa</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Identifica hits entre o query map e a sequência alvo.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Encontra *hits* (seeds coincidentes) entre a sequência alvo e o query map.</span>
+
+<span class="sd">    Percorre todos os k-mers (tamanho ``w``) da sequência alvo e, quando um k-mer</span>
+<span class="sd">    existir no ``mapa`` da query, gera um hit por cada posição de ocorrência na query.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq (str): Sequência alvo (target) onde procurar.</span>
+<span class="sd">        mapa (dict[str, list[int]]): Query map produzido por :func:`construir_mapa`.</span>
+<span class="sd">        w (int): Tamanho do k-mer (word size).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[tuple[int, int]]: Lista de hits no formato ``(pos_q, pos_t)``, onde:</span>
+<span class="sd">        - ``pos_q`` é a posição do k-mer na query,</span>
+<span class="sd">        - ``pos_t`` é a posição do k-mer na sequência alvo.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: Se ``seq`` não for string, ou ``mapa`` não for dicionário.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; encontrar_hits(&quot;TTACGTAA&quot;, {&quot;ACG&quot;:[0], &quot;CGT&quot;:[1]}, 3)</span>
+<span class="sd">        [(0, 2), (1, 3)]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">hits</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">-</span> <span class="n">w</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
@@ -132,11 +196,53 @@
 <div class="viewcode-block" id="estender_hit">
 <a class="viewcode-back" href="../../modules.html#bioinf.blast.estender_hit">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">estender_hit</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">seq</span><span class="p">,</span> <span class="n">hit</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">match</span><span class="p">,</span> <span class="n">mismatch</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Estende um hit para esquerda e direita para encontrar HSP.</span>
-<span class="sd">    Complexidade reduzida para B ou A no Radon.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estende um hit (seed) para obter um HSP (alinhamento local simplificado).</span>
+
+<span class="sd">    A partir de um hit inicial (k-mer coincidente), tenta estender em duas direções:</span>
+<span class="sd">    - para a esquerda (índices decrescentes),</span>
+<span class="sd">    - para a direita (índices crescentes),</span>
+<span class="sd">    acumulando um score simples de match/mismatch.</span>
+
+<span class="sd">    A extensão pára quando:</span>
+<span class="sd">    - sai dos limites das sequências, ou</span>
+<span class="sd">    - o score cai abaixo de metade do melhor score observado durante a extensão</span>
+<span class="sd">      (heurística de cutoff).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query (str): Sequência de consulta.</span>
+<span class="sd">        seq (str): Sequência alvo.</span>
+<span class="sd">        hit (tuple[int, int]): Par ``(pos_q, pos_t)`` com as posições iniciais do seed.</span>
+<span class="sd">        w (int): Tamanho do seed (k-mer) usado no hit.</span>
+<span class="sd">        match (int): Score para match.</span>
+<span class="sd">        mismatch (int): Penalização para mismatch.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[int, int, int, int]: Tuplo ``(score, q_start, t_start, length)``, onde:</span>
+<span class="sd">        - ``score`` é o melhor score atingido durante a extensão,</span>
+<span class="sd">        - ``q_start`` é a posição inicial (0-based) na query,</span>
+<span class="sd">        - ``t_start`` é a posição inicial (0-based) no alvo,</span>
+<span class="sd">        - ``length`` é o comprimento do segmento alinhado (sem gaps).</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: Se ``hit`` não for um tuplo com dois inteiros.</span>
+<span class="sd">        IndexError: Se ``hit`` contiver posições fora dos limites (o código assume hit válido).</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; estender_hit(&quot;ACGTAC&quot;, &quot;TTACGTAA&quot;, (0, 2), 3, 2, -1)</span>
+<span class="sd">        (6, 0, 2, 3)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">extender</span><span class="p">(</span><span class="n">direcao</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extende um seed numa direção e devolve o melhor score local.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            direcao (str): &quot;esquerda&quot; ou &quot;direita&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[int, int, int, int]: ``(best_score, start_q, start_t, length)``.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Se ``direcao`` não for &quot;esquerda&quot; nem &quot;direita&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">score</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">match</span>
         <span class="n">best_score</span> <span class="o">=</span> <span class="n">score</span>
         <span class="n">best_start_q</span> <span class="o">=</span> <span class="n">hit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -146,34 +252,36 @@
         <span class="k">if</span> <span class="n">direcao</span> <span class="o">==</span> <span class="s2">&quot;esquerda&quot;</span><span class="p">:</span>
             <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">hit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">hit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="n">passo</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>  
+        <span class="k">else</span><span class="p">:</span>
             <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">hit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">hit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">w</span>
             <span class="n">passo</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">start_q</span><span class="p">,</span> <span class="n">start_t</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">best_start_q</span><span class="p">,</span> <span class="n">best_start_t</span><span class="p">,</span> <span class="n">best_len</span>
 
         <span class="k">while</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">query</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
             <span class="n">score</span> <span class="o">+=</span> <span class="n">match</span> <span class="k">if</span> <span class="n">query</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">seq</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">else</span> <span class="n">mismatch</span>
             <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="n">best_score</span><span class="p">:</span>
                 <span class="n">best_score</span> <span class="o">=</span> <span class="n">score</span>
                 <span class="k">if</span> <span class="n">direcao</span> <span class="o">==</span> <span class="s2">&quot;esquerda&quot;</span><span class="p">:</span>
-                    <span class="n">best_start_q</span> <span class="o">=</span> <span class="n">i</span>
-                    <span class="n">best_start_t</span> <span class="o">=</span> <span class="n">j</span>
-                    <span class="n">best_len</span> <span class="o">=</span> <span class="p">(</span><span class="n">hit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">w</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span>
+                    <span class="n">start_q</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="n">start_t</span> <span class="o">=</span> <span class="n">j</span>
+                    <span class="n">length</span> <span class="o">=</span> <span class="p">(</span><span class="n">hit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">w</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">best_len</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="n">best_start_q</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">length</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="n">hit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="k">elif</span> <span class="n">score</span> <span class="o">&lt;</span> <span class="n">best_score</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="k">break</span>
             <span class="n">i</span> <span class="o">+=</span> <span class="n">passo</span>
             <span class="n">j</span> <span class="o">+=</span> <span class="n">passo</span>
 
-        <span class="k">return</span> <span class="n">best_score</span><span class="p">,</span> <span class="n">best_start_q</span><span class="p">,</span> <span class="n">best_start_t</span><span class="p">,</span> <span class="n">best_len</span>
+        <span class="k">return</span> <span class="n">best_score</span><span class="p">,</span> <span class="n">start_q</span><span class="p">,</span> <span class="n">start_t</span><span class="p">,</span> <span class="n">length</span>
 
+    <span class="n">score_esq</span><span class="p">,</span> <span class="n">q_start_esq</span><span class="p">,</span> <span class="n">t_start_esq</span><span class="p">,</span> <span class="n">len_esq</span> <span class="o">=</span> <span class="n">extender</span><span class="p">(</span><span class="s2">&quot;esquerda&quot;</span><span class="p">)</span>
+    <span class="n">score_dir</span><span class="p">,</span> <span class="n">q_start_dir</span><span class="p">,</span> <span class="n">t_start_dir</span><span class="p">,</span> <span class="n">len_dir</span> <span class="o">=</span> <span class="n">extender</span><span class="p">(</span><span class="s2">&quot;direita&quot;</span><span class="p">)</span>
 
-    <span class="n">score_esq</span><span class="p">,</span> <span class="n">q_start</span><span class="p">,</span> <span class="n">t_start</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">extender</span><span class="p">(</span><span class="s2">&quot;esquerda&quot;</span><span class="p">)</span>
-
-    <span class="n">score_dir</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">extender</span><span class="p">(</span><span class="s2">&quot;direita&quot;</span><span class="p">)</span>
- 
-    <span class="n">max_score</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">score_esq</span><span class="p">,</span> <span class="n">score_dir</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">max_score</span><span class="p">,</span> <span class="n">q_start</span><span class="p">,</span> <span class="n">t_start</span><span class="p">,</span> <span class="n">length</span></div>
+    <span class="k">if</span> <span class="n">score_esq</span> <span class="o">&gt;=</span> <span class="n">score_dir</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">score_esq</span><span class="p">,</span> <span class="n">q_start_esq</span><span class="p">,</span> <span class="n">t_start_esq</span><span class="p">,</span> <span class="n">len_esq</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">score_dir</span><span class="p">,</span> <span class="n">q_start_dir</span><span class="p">,</span> <span class="n">t_start_dir</span><span class="p">,</span> <span class="n">len_dir</span></div>
 
 
 </pre></div>

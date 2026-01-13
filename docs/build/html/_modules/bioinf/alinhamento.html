@@ -75,12 +75,41 @@
     <span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>  <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">},</span>
     <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>
 <span class="p">}</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">dict[str, dict[str, int]]: Matriz de substituição usada por omissão nas funções de alinhamento.</span>
+
+<span class="sd">Nota:</span>
+<span class="sd">    Apesar do nome ``BLOSUM62``, esta matriz é definida apenas para o alfabeto</span>
+<span class="sd">    ``A,C,G,T`` (DNA). Se forem usados caracteres fora deste alfabeto, as</span>
+<span class="sd">    funções que acedem a esta matriz podem levantar ``KeyError``.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="score_subst">
 <a class="viewcode-back" href="../../modules.html#bioinf.alinhamento.score_subst">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">score_subst</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">matriz</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retorna o score de substituição entre dois caracteres.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtém o score de substituição entre dois símbolos.</span>
+
+<span class="sd">    Esta função faz um acesso direto a ``matriz[a][b]`` e assume que a matriz</span>
+<span class="sd">    está completa para os símbolos fornecidos.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a (str): Símbolo da sequência 1 (tipicamente um carácter).</span>
+<span class="sd">        b (str): Símbolo da sequência 2 (tipicamente um carácter).</span>
+<span class="sd">        matriz (dict): Matriz de substituição no formato</span>
+<span class="sd">            ``dict[símbolo][símbolo] -&gt; score`` (ex.: PAM/BLOSUM ou matriz custom).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int | float: Score de substituição definido na matriz.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        KeyError: Se ``a`` ou ``b`` não existir na matriz fornecida.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; m = {&#39;A&#39;: {&#39;A&#39;: 1, &#39;C&#39;: -1}, &#39;C&#39;: {&#39;A&#39;: -1, &#39;C&#39;: 1}}</span>
+<span class="sd">        &gt;&gt;&gt; score_subst(&#39;A&#39;, &#39;C&#39;, m)</span>
+<span class="sd">        -1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">matriz</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span></div>
 
 
@@ -88,7 +117,24 @@
 <div class="viewcode-block" id="dot_plot">
 <a class="viewcode-back" href="../../modules.html#bioinf.alinhamento.dot_plot">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">dot_plot</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cria matriz de pontos (1 = match, 0 = mismatch).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cria uma matriz de pontos (dot plot) binária entre duas sequências.</span>
+
+<span class="sd">    Produz uma matriz ``len(seq1) x len(seq2)`` em que cada célula vale:</span>
+<span class="sd">    - ``1`` se os caracteres forem iguais (match),</span>
+<span class="sd">    - ``0`` caso contrário (mismatch).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq1 (str): Primeira sequência.</span>
+<span class="sd">        seq2 (str): Segunda sequência.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[list[int]]: Matriz de inteiros (0/1) com dimensão</span>
+<span class="sd">        ``len(seq1) x len(seq2)``.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; dot_plot(&quot;AC&quot;, &quot;AGC&quot;)</span>
+<span class="sd">        [[1, 0, 0], [0, 0, 1]]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[[</span><span class="mi">1</span> <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">seq2</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">seq1</span><span class="p">]</span></div>
 
 
@@ -96,7 +142,33 @@
 <div class="viewcode-block" id="needleman_wunsch">
 <a class="viewcode-back" href="../../modules.html#bioinf.alinhamento.needleman_wunsch">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">needleman_wunsch</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">matriz_subst</span><span class="o">=</span><span class="n">BLOSUM62</span><span class="p">,</span> <span class="n">gap</span><span class="o">=-</span><span class="mi">5</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Alinhamento global (Needleman-Wunsch).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Executa alinhamento global (Needleman–Wunsch) entre duas sequências.</span>
+
+<span class="sd">    Implementa a fase de preenchimento da matriz de scores para alinhamento global</span>
+<span class="sd">    e, no final, reconstrói um alinhamento ótimo via traceback.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq1 (str): Primeira sequência a alinhar.</span>
+<span class="sd">        seq2 (str): Segunda sequência a alinhar.</span>
+<span class="sd">        matriz_subst (dict, optional): Matriz de substituição (ex.: BLOSUM/PAM ou</span>
+<span class="sd">            matriz custom). Por omissão usa ``BLOSUM62``.</span>
+<span class="sd">        gap (int, optional): Penalização linear de gap (inserção/deleção).</span>
+<span class="sd">            Por omissão ``-5``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[str, str, int | float]: Triplo ``(seq1_alinhada, seq2_alinhada, score)``,</span>
+<span class="sd">        onde ``seq1_alinhada`` e ``seq2_alinhada`` incluem gaps ``&#39;-&#39;``, e</span>
+<span class="sd">        ``score`` é o score ótimo do alinhamento global.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        KeyError: Se a matriz de substituição não contiver algum símbolo presente</span>
+<span class="sd">            nas sequências.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; a1, a2, sc = needleman_wunsch(&quot;AC&quot;, &quot;AGC&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; len(a1) == len(a2)</span>
+<span class="sd">        True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
     <span class="n">m</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">cols</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">)]</span>
 
@@ -117,7 +189,39 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_traceback_nw</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">matriz_subst</span><span class="p">,</span> <span class="n">gap</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reconstrói alinhamento global a partir da matriz de scores.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reconstrói um alinhamento global ótimo a partir da matriz de scores.</span>
+
+<span class="sd">    Esta função percorre a matriz ``m`` do canto inferior direito para o superior</span>
+<span class="sd">    esquerdo, escolhendo transições compatíveis com o score ótimo (diagonal,</span>
+<span class="sd">    cima, esquerda), gerando duas strings alinhadas (com gaps).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq1 (str): Primeira sequência original.</span>
+<span class="sd">        seq2 (str): Segunda sequência original.</span>
+<span class="sd">        m (list[list[int | float]]): Matriz de programação dinâmica já preenchida.</span>
+<span class="sd">        matriz_subst (dict): Matriz de substituição usada no preenchimento.</span>
+<span class="sd">        gap (int): Penalização linear de gap usada no preenchimento.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[str, str, int | float]: Triplo ``(seq1_alinhada, seq2_alinhada, score_final)``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        KeyError: Se a matriz de substituição não contiver símbolos necessários</span>
+<span class="sd">            para comparar durante o traceback.</span>
+<span class="sd">        IndexError: Se for chamado com ``m`` incompatível com os comprimentos de</span>
+<span class="sd">            ``seq1`` e ``seq2``.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        Em empates, a preferência de caminho é:</span>
+<span class="sd">        1) diagonal (match/mismatch),</span>
+<span class="sd">        2) cima (gap na seq2),</span>
+<span class="sd">        3) esquerda (gap na seq1).</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; a1, a2, sc = needleman_wunsch(&quot;A&quot;, &quot;A&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; (a1, a2, sc)</span>
+<span class="sd">        (&#39;A&#39;, &#39;A&#39;, 4)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)</span>
     <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
 
@@ -142,7 +246,34 @@
 <div class="viewcode-block" id="smith_waterman">
 <a class="viewcode-back" href="../../modules.html#bioinf.alinhamento.smith_waterman">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">smith_waterman</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">matriz_subst</span><span class="o">=</span><span class="n">BLOSUM62</span><span class="p">,</span> <span class="n">gap</span><span class="o">=-</span><span class="mi">5</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Alinhamento local (Smith-Waterman).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Executa alinhamento local (Smith–Waterman) entre duas sequências.</span>
+
+<span class="sd">    Implementa a fase de preenchimento da matriz de scores para alinhamento local,</span>
+<span class="sd">    aplicando a regra de truncar a 0 (não permitir scores negativos), e depois</span>
+<span class="sd">    reconstrói o melhor alinhamento local via traceback a partir da célula de</span>
+<span class="sd">    score máximo.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq1 (str): Primeira sequência a alinhar.</span>
+<span class="sd">        seq2 (str): Segunda sequência a alinhar.</span>
+<span class="sd">        matriz_subst (dict, optional): Matriz de substituição (ex.: BLOSUM/PAM ou</span>
+<span class="sd">            matriz custom). Por omissão usa ``BLOSUM62``.</span>
+<span class="sd">        gap (int, optional): Penalização linear de gap (inserção/deleção).</span>
+<span class="sd">            Por omissão ``-5``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[str, str, int | float]: Triplo ``(subseq1_alinhada, subseq2_alinhada, score)``,</span>
+<span class="sd">        onde as subsequências alinhadas correspondem ao melhor alinhamento local.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        KeyError: Se a matriz de substituição não contiver algum símbolo presente</span>
+<span class="sd">            nas sequências.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; a1, a2, sc = smith_waterman(&quot;ACGT&quot;, &quot;TACG&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; sc &gt;= 0</span>
+<span class="sd">        True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
     <span class="n">m</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">cols</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">)]</span>
     <span class="n">max_score</span><span class="p">,</span> <span class="n">max_pos</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -162,7 +293,36 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_traceback_sw</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">matriz_subst</span><span class="p">,</span> <span class="n">gap</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reconstrói alinhamento local a partir da matriz de scores.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reconstrói o melhor alinhamento local a partir da matriz de scores.</span>
+
+<span class="sd">    Começa na posição ``start`` (tipicamente a célula de score máximo) e segue</span>
+<span class="sd">    o caminho de traceback até encontrar uma célula com score 0.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq1 (str): Primeira sequência original.</span>
+<span class="sd">        seq2 (str): Segunda sequência original.</span>
+<span class="sd">        m (list[list[int | float]]): Matriz de programação dinâmica já preenchida.</span>
+<span class="sd">        start (tuple[int, int]): Coordenadas (i, j) do ponto inicial do traceback.</span>
+<span class="sd">        matriz_subst (dict): Matriz de substituição usada no preenchimento.</span>
+<span class="sd">        gap (int): Penalização linear de gap usada no preenchimento.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[str, str, int | float]: Triplo ``(subseq1_alinhada, subseq2_alinhada, score_local)``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        KeyError: Se a matriz de substituição não contiver símbolos necessários</span>
+<span class="sd">            para comparar durante o traceback.</span>
+<span class="sd">        IndexError: Se ``start`` estiver fora dos limites de ``m``.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        Tal como no traceback global, em empates a preferência de caminho é:</span>
+<span class="sd">        1) diagonal, 2) cima, 3) esquerda.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; a1, a2, sc = smith_waterman(&quot;A&quot;, &quot;T&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; sc</span>
+<span class="sd">        0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">start</span>
     <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
     <span class="k">while</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
@@ -186,13 +346,35 @@
 <div class="viewcode-block" id="consenso_multiplas">
 <a class="viewcode-back" href="../../modules.html#bioinf.alinhamento.consenso_multiplas">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">consenso_multiplas</span><span class="p">(</span><span class="n">alinhamento</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gera sequência consenso; desempate pelo primeiro elemento da coluna.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calcula a sequência consenso a partir de um alinhamento múltiplo.</span>
+
+<span class="sd">    Para cada coluna do alinhamento, escolhe o carácter mais frequente.</span>
+<span class="sd">    Em caso de empate, escolhe o primeiro carácter que aparece nessa coluna.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        alinhamento (list[str]): Lista de sequências já alinhadas (todas com o</span>
+<span class="sd">            mesmo comprimento), tipicamente contendo gaps ``&#39;-&#39;``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Sequência consenso (inclui gaps se forem o símbolo mais frequente).</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: Se ``alinhamento`` não for iterável.</span>
+<span class="sd">        ValueError: Se as sequências em ``alinhamento`` não tiverem o mesmo comprimento.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; consenso_multiplas([&quot;A-C&quot;, &quot;ACC&quot;, &quot;A-C&quot;])</span>
+<span class="sd">        &#39;A-C&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">consenso</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">alinhamento</span><span class="p">):</span>
         <span class="n">freq</span> <span class="o">=</span> <span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="n">col</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">col</span><span class="p">)}</span>
         <span class="n">max_freq</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">freq</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-        <span class="n">candidatos</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">col</span> <span class="k">if</span> <span class="n">freq</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">==</span> <span class="n">max_freq</span><span class="p">]</span>
-        <span class="n">consenso</span> <span class="o">+=</span> <span class="n">candidatos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># escolhe o primeiro carácter na coluna com frequência máxima</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">col</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">freq</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">==</span> <span class="n">max_freq</span><span class="p">:</span>
+                <span class="n">consenso</span> <span class="o">+=</span> <span class="n">c</span>
+                <span class="k">break</span>
     <span class="k">return</span> <span class="n">consenso</span></div>
 
 
@@ -200,7 +382,37 @@
 <div class="viewcode-block" id="alinhamento_multiplo">
 <a class="viewcode-back" href="../../modules.html#bioinf.alinhamento.alinhamento_multiplo">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">alinhamento_multiplo</span><span class="p">(</span><span class="n">seqs</span><span class="p">,</span> <span class="n">matriz_subst</span><span class="o">=</span><span class="n">BLOSUM62</span><span class="p">,</span> <span class="n">gap</span><span class="o">=-</span><span class="mi">5</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Alinhamento múltiplo progressivo usando Needleman-Wunsch.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Realiza um alinhamento múltiplo “progressivo” simplificado.</span>
+
+<span class="sd">    Estratégia implementada:</span>
+<span class="sd">        - Inicializa cada sequência como um alinhamento “unitário”.</span>
+<span class="sd">        - Repetidamente, escolhe o par com melhor score de Needleman–Wunsch</span>
+<span class="sd">          (aplicado às strings representativas atuais) e junta-o num alinhamento</span>
+<span class="sd">          de 2 sequências.</span>
+<span class="sd">        - No final devolve o alinhamento final e a sequência consenso.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seqs (list[str]): Lista de sequências a alinhar.</span>
+<span class="sd">        matriz_subst (dict, optional): Matriz de substituição usada no NW.</span>
+<span class="sd">            Por omissão usa ``BLOSUM62``.</span>
+<span class="sd">        gap (int, optional): Penalização linear de gap. Por omissão ``-5``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[list[str], str]: Par ``(alinhamento, consenso)`` onde:</span>
+<span class="sd">        - ``alinhamento`` é uma lista de strings alinhadas (com gaps).</span>
+<span class="sd">        - ``consenso`` é a sequência consenso calculada por ``consenso_multiplas``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        IndexError: Se ``seqs`` estiver vazio (o código assume pelo menos 1 sequência).</span>
+<span class="sd">        KeyError: Se a matriz de substituição não contiver símbolos usados.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; alin, cons = alinhamento_multiplo([&quot;AC&quot;, &quot;AGC&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; len(alin)</span>
+<span class="sd">        2</span>
+<span class="sd">        &gt;&gt;&gt; len(alin[0]) == len(alin[1])</span>
+<span class="sd">        True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[[</span><span class="n">seqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]],</span> <span class="n">seqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -220,9 +432,11 @@
                     <span class="n">melhor_alin</span> <span class="o">=</span> <span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span>
 
         <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">melhor_par</span>
+        <span class="c1"># combinar os alinhamentos existentes na lista</span>
+        <span class="n">combinacao</span> <span class="o">=</span> <span class="p">[</span><span class="n">melhor_alin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">melhor_alin</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
         <span class="n">alinhamentos</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
         <span class="n">alinhamentos</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="n">alinhamentos</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">melhor_alin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">melhor_alin</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="n">alinhamentos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">combinacao</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">alinhamentos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">consenso_multiplas</span><span class="p">(</span><span class="n">alinhamentos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
 

@@ -51,6 +51,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#bioinf.sequencias.validar_dna"><code class="docutils literal notranslate"><span class="pre">validar_dna()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bioinf.sequencias.validar_proteina"><code class="docutils literal notranslate"><span class="pre">validar_proteina()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bioinf.sequencias.validar_rna"><code class="docutils literal notranslate"><span class="pre">validar_rna()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bioinf.alinhamento.BLOSUM62"><code class="docutils literal notranslate"><span class="pre">BLOSUM62</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bioinf.alinhamento.alinhamento_multiplo"><code class="docutils literal notranslate"><span class="pre">alinhamento_multiplo()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bioinf.alinhamento.consenso_multiplas"><code class="docutils literal notranslate"><span class="pre">consenso_multiplas()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bioinf.alinhamento.dot_plot"><code class="docutils literal notranslate"><span class="pre">dot_plot()</span></code></a></li>
@@ -106,188 +107,1067 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.sequencias.complemento">
 <span class="sig-prename descclassname"><span class="pre">bioinf.sequencias.</span></span><span class="sig-name descname"><span class="pre">complemento</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dna_seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/sequencias.html#complemento"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.sequencias.complemento" title="Link to this definition"></a></dt>
-<dd><p>Retorna o complemento de uma sequência de DNA.
-Retorna string vazia se não for DNA válido.</p>
+<dd><p>Calcula o complemento de uma sequência de DNA.</p>
+<p>Usa o emparelhamento complementar:
+- A ↔ T
+- C ↔ G</p>
+<p>Se a sequência de entrada não for DNA válido (ver <a class="reference internal" href="#bioinf.sequencias.validar_dna" title="bioinf.sequencias.validar_dna"><code class="xref py py-func docutils literal notranslate"><span class="pre">validar_dna()</span></code></a>),
+devolve <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dna_seq</strong> (<em>str</em>) – Sequência de DNA.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Complemento (em maiúsculas), ou <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> se a entrada não for DNA válido.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AttributeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">dna_seq</span></code> não for string e não tiver <code class="docutils literal notranslate"><span class="pre">upper()</span></code>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">complemento</span><span class="p">(</span><span class="s2">&quot;ATGC&quot;</span><span class="p">)</span>
+<span class="go">&#39;TACG&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">complemento</span><span class="p">(</span><span class="s2">&quot;AUGC&quot;</span><span class="p">)</span>
+<span class="go">&#39;&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.sequencias.complemento_inverso">
 <span class="sig-prename descclassname"><span class="pre">bioinf.sequencias.</span></span><span class="sig-name descname"><span class="pre">complemento_inverso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dna_seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/sequencias.html#complemento_inverso"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.sequencias.complemento_inverso" title="Link to this definition"></a></dt>
-<dd><p>Retorna o complemento reverso de uma sequência de DNA (5’ → 3’).
-Retorna string vazia se não for DNA válido.</p>
+<dd><p>Calcula o complemento inverso (reverse-complement) de uma sequência de DNA.</p>
+<p>Produz o complemento e inverte a orientação, equivalente ao complemento reverso
+usado frequentemente em bioinformática para obter a cadeia complementar no sentido
+5’→3’. Se a sequência de entrada não for DNA válido, devolve <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dna_seq</strong> (<em>str</em>) – Sequência de DNA.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Complemento inverso (em maiúsculas), ou <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> se a entrada não for DNA válido.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AttributeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">dna_seq</span></code> não for string e não tiver <code class="docutils literal notranslate"><span class="pre">upper()</span></code>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">complemento_inverso</span><span class="p">(</span><span class="s2">&quot;ATGC&quot;</span><span class="p">)</span>
+<span class="go">&#39;GCAT&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">complemento_inverso</span><span class="p">(</span><span class="s2">&quot;AUGC&quot;</span><span class="p">)</span>
+<span class="go">&#39;&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.sequencias.reverso">
 <span class="sig-prename descclassname"><span class="pre">bioinf.sequencias.</span></span><span class="sig-name descname"><span class="pre">reverso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/sequencias.html#reverso"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.sequencias.reverso" title="Link to this definition"></a></dt>
-<dd><p>Retorna a sequência invertida.
-Retorna string vazia se a sequência estiver vazia.</p>
+<dd><p>Devolve a sequência invertida (reverse).</p>
+<p>Se a sequência de entrada for vazia (<code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>/<code class="docutils literal notranslate"><span class="pre">None</span></code>/falsy), devolve <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seq</strong> (<em>str</em>) – Sequência a inverter.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sequência invertida, ou <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> se a entrada for vazia.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reverso</span><span class="p">(</span><span class="s2">&quot;ATGC&quot;</span><span class="p">)</span>
+<span class="go">&#39;CGTA&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reverso</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="go">&#39;&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.sequencias.transcricao">
 <span class="sig-prename descclassname"><span class="pre">bioinf.sequencias.</span></span><span class="sig-name descname"><span class="pre">transcricao</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dna_seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/sequencias.html#transcricao"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.sequencias.transcricao" title="Link to this definition"></a></dt>
-<dd><p>Transcreve uma sequência de DNA para RNA (T → U).
-Retorna a sequência de RNA correspondente, ou string vazia se não for DNA válido.</p>
+<dd><p>Transcreve DNA para RNA substituindo <code class="docutils literal notranslate"><span class="pre">T</span></code> por <code class="docutils literal notranslate"><span class="pre">U</span></code>.</p>
+<p>Se a sequência de entrada não for DNA válido (ver <a class="reference internal" href="#bioinf.sequencias.validar_dna" title="bioinf.sequencias.validar_dna"><code class="xref py py-func docutils literal notranslate"><span class="pre">validar_dna()</span></code></a>),
+devolve string vazia <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> em vez de levantar exceção.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dna_seq</strong> (<em>str</em>) – Sequência de DNA.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sequência de RNA resultante (em maiúsculas), ou <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> se a entrada
+não for DNA válido.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AttributeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">dna_seq</span></code> não for string e não tiver <code class="docutils literal notranslate"><span class="pre">upper()</span></code>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">transcricao</span><span class="p">(</span><span class="s2">&quot;ATGC&quot;</span><span class="p">)</span>
+<span class="go">&#39;AUGC&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transcricao</span><span class="p">(</span><span class="s2">&quot;AUGC&quot;</span><span class="p">)</span>
+<span class="go">&#39;&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.sequencias.validar_dna">
 <span class="sig-prename descclassname"><span class="pre">bioinf.sequencias.</span></span><span class="sig-name descname"><span class="pre">validar_dna</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/sequencias.html#validar_dna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.sequencias.validar_dna" title="Link to this definition"></a></dt>
-<dd><p>Valida se uma sequência contém apenas nucleótidos de DNA (A, C, G, T).
-Retorna True se válido, False caso contrário.</p>
+<dd><p>Valida se uma sequência contém apenas nucleótidos de DNA.</p>
+<p>Aceita as bases <code class="docutils literal notranslate"><span class="pre">A,</span> <span class="pre">C,</span> <span class="pre">G,</span> <span class="pre">T</span></code> (case-insensitive). Se a sequência for vazia
+(<code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>/<code class="docutils literal notranslate"><span class="pre">None</span></code>/falsy), devolve <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seq</strong> (<em>str</em>) – Sequência a validar.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> se a sequência for não vazia e contiver apenas A/C/G/T;
+caso contrário <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AttributeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">seq</span></code> não for string e não tiver o método <code class="docutils literal notranslate"><span class="pre">upper()</span></code>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">validar_dna</span><span class="p">(</span><span class="s2">&quot;ACGT&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validar_dna</span><span class="p">(</span><span class="s2">&quot;acgt&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validar_dna</span><span class="p">(</span><span class="s2">&quot;ACGU&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validar_dna</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.sequencias.validar_proteina">
 <span class="sig-prename descclassname"><span class="pre">bioinf.sequencias.</span></span><span class="sig-name descname"><span class="pre">validar_proteina</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/sequencias.html#validar_proteina"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.sequencias.validar_proteina" title="Link to this definition"></a></dt>
-<dd><p>Valida se uma sequência contém apenas aminoácidos válidos (20 aminoácidos padrão).
-Retorna True se válido, False caso contrário.</p>
+<dd><p>Valida se uma sequência contém apenas aminoácidos padrão (20 AA).</p>
+<p>Aceita o alfabeto:
+<code class="docutils literal notranslate"><span class="pre">A,</span> <span class="pre">C,</span> <span class="pre">D,</span> <span class="pre">E,</span> <span class="pre">F,</span> <span class="pre">G,</span> <span class="pre">H,</span> <span class="pre">I,</span> <span class="pre">K,</span> <span class="pre">L,</span> <span class="pre">M,</span> <span class="pre">N,</span> <span class="pre">P,</span> <span class="pre">Q,</span> <span class="pre">R,</span> <span class="pre">S,</span> <span class="pre">T,</span> <span class="pre">V,</span> <span class="pre">W,</span> <span class="pre">Y</span></code> (case-insensitive).
+Se a sequência for vazia (<code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>/<code class="docutils literal notranslate"><span class="pre">None</span></code>/falsy), devolve <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seq</strong> (<em>str</em>) – Sequência proteica a validar.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> se a sequência for não vazia e contiver apenas aminoácidos
+do conjunto aceite; caso contrário <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AttributeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">seq</span></code> não for string e não tiver o método <code class="docutils literal notranslate"><span class="pre">upper()</span></code>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">validar_proteina</span><span class="p">(</span><span class="s2">&quot;ACDEFGHIKLMNPQRSTVWY&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validar_proteina</span><span class="p">(</span><span class="s2">&quot;ACDXYZ&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validar_proteina</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.sequencias.validar_rna">
 <span class="sig-prename descclassname"><span class="pre">bioinf.sequencias.</span></span><span class="sig-name descname"><span class="pre">validar_rna</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/sequencias.html#validar_rna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.sequencias.validar_rna" title="Link to this definition"></a></dt>
-<dd><p>Valida se uma sequência contém apenas nucleótidos de RNA (A, C, G, U).
-Retorna True se válido, False caso contrário.</p>
+<dd><p>Valida se uma sequência contém apenas nucleótidos de RNA.</p>
+<p>Aceita as bases <code class="docutils literal notranslate"><span class="pre">A,</span> <span class="pre">C,</span> <span class="pre">G,</span> <span class="pre">U</span></code> (case-insensitive). Se a sequência for vazia
+(<code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>/<code class="docutils literal notranslate"><span class="pre">None</span></code>/falsy), devolve <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seq</strong> (<em>str</em>) – Sequência a validar.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> se a sequência for não vazia e contiver apenas A/C/G/U;
+caso contrário <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AttributeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">seq</span></code> não for string e não tiver o método <code class="docutils literal notranslate"><span class="pre">upper()</span></code>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">validar_rna</span><span class="p">(</span><span class="s2">&quot;ACGU&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validar_rna</span><span class="p">(</span><span class="s2">&quot;ACGT&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validar_rna</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
-<dl class="py function" id="module-bioinf.alinhamento">
+<dl class="py data" id="module-bioinf.alinhamento">
+<dt class="sig sig-object py" id="bioinf.alinhamento.BLOSUM62">
+<span class="sig-prename descclassname"><span class="pre">bioinf.alinhamento.</span></span><span class="sig-name descname"><span class="pre">BLOSUM62</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'A':</span> <span class="pre">{'A':</span> <span class="pre">4,</span> <span class="pre">'C':</span> <span class="pre">0,</span> <span class="pre">'G':</span> <span class="pre">0,</span> <span class="pre">'T':</span> <span class="pre">0},</span> <span class="pre">'C':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">9,</span> <span class="pre">'G':</span> <span class="pre">-3,</span> <span class="pre">'T':</span> <span class="pre">-1},</span> <span class="pre">'G':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">-3,</span> <span class="pre">'G':</span> <span class="pre">6,</span> <span class="pre">'T':</span> <span class="pre">-2},</span> <span class="pre">'T':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">-1,</span> <span class="pre">'G':</span> <span class="pre">-2,</span> <span class="pre">'T':</span> <span class="pre">5}}</span></em><a class="headerlink" href="#bioinf.alinhamento.BLOSUM62" title="Link to this definition"></a></dt>
+<dd><p>Matriz de substituição usada por omissão nas funções de alinhamento.</p>
+<dl class="simple">
+<dt>Nota:</dt><dd><p>Apesar do nome <code class="docutils literal notranslate"><span class="pre">BLOSUM62</span></code>, esta matriz é definida apenas para o alfabeto
+<code class="docutils literal notranslate"><span class="pre">A,C,G,T</span></code> (DNA). Se forem usados caracteres fora deste alfabeto, as
+funções que acedem a esta matriz podem levantar <code class="docutils literal notranslate"><span class="pre">KeyError</span></code>.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, dict[str, int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="bioinf.alinhamento.alinhamento_multiplo">
 <span class="sig-prename descclassname"><span class="pre">bioinf.alinhamento.</span></span><span class="sig-name descname"><span class="pre">alinhamento_multiplo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matriz_subst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'A':</span> <span class="pre">{'A':</span> <span class="pre">4,</span> <span class="pre">'C':</span> <span class="pre">0,</span> <span class="pre">'G':</span> <span class="pre">0,</span> <span class="pre">'T':</span> <span class="pre">0},</span> <span class="pre">'C':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">9,</span> <span class="pre">'G':</span> <span class="pre">-3,</span> <span class="pre">'T':</span> <span class="pre">-1},</span> <span class="pre">'G':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">-3,</span> <span class="pre">'G':</span> <span class="pre">6,</span> <span class="pre">'T':</span> <span class="pre">-2},</span> <span class="pre">'T':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">-1,</span> <span class="pre">'G':</span> <span class="pre">-2,</span> <span class="pre">'T':</span> <span class="pre">5}}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/alinhamento.html#alinhamento_multiplo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.alinhamento.alinhamento_multiplo" title="Link to this definition"></a></dt>
-<dd><p>Alinhamento múltiplo progressivo usando Needleman-Wunsch.</p>
+<dd><p>Realiza um alinhamento múltiplo “progressivo” simplificado.</p>
+<dl class="simple">
+<dt>Estratégia implementada:</dt><dd><ul class="simple">
+<li><p>Inicializa cada sequência como um alinhamento “unitário”.</p></li>
+<li><p>Repetidamente, escolhe o par com melhor score de Needleman–Wunsch
+(aplicado às strings representativas atuais) e junta-o num alinhamento
+de 2 sequências.</p></li>
+<li><p>No final devolve o alinhamento final e a sequência consenso.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seqs</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Lista de sequências a alinhar.</p></li>
+<li><p><strong>matriz_subst</strong> (<em>dict</em><em>, </em><em>optional</em>) – Matriz de substituição usada no NW.
+Por omissão usa <code class="docutils literal notranslate"><span class="pre">BLOSUM62</span></code>.</p></li>
+<li><p><strong>gap</strong> (<em>int</em><em>, </em><em>optional</em>) – Penalização linear de gap. Por omissão <code class="docutils literal notranslate"><span class="pre">-5</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Par <code class="docutils literal notranslate"><span class="pre">(alinhamento,</span> <span class="pre">consenso)</span></code> onde:
+- <code class="docutils literal notranslate"><span class="pre">alinhamento</span></code> é uma lista de strings alinhadas (com gaps).
+- <code class="docutils literal notranslate"><span class="pre">consenso</span></code> é a sequência consenso calculada por <code class="docutils literal notranslate"><span class="pre">consenso_multiplas</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[list[str], str]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>IndexError</strong> – Se <code class="docutils literal notranslate"><span class="pre">seqs</span></code> estiver vazio (o código assume pelo menos 1 sequência).</p></li>
+<li><p><strong>KeyError</strong> – Se a matriz de substituição não contiver símbolos usados.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">alin</span><span class="p">,</span> <span class="n">cons</span> <span class="o">=</span> <span class="n">alinhamento_multiplo</span><span class="p">([</span><span class="s2">&quot;AC&quot;</span><span class="p">,</span> <span class="s2">&quot;AGC&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">alin</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">alin</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">alin</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.alinhamento.consenso_multiplas">
 <span class="sig-prename descclassname"><span class="pre">bioinf.alinhamento.</span></span><span class="sig-name descname"><span class="pre">consenso_multiplas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alinhamento</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/alinhamento.html#consenso_multiplas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.alinhamento.consenso_multiplas" title="Link to this definition"></a></dt>
-<dd><p>Gera sequência consenso; desempate pelo primeiro elemento da coluna.</p>
+<dd><p>Calcula a sequência consenso a partir de um alinhamento múltiplo.</p>
+<p>Para cada coluna do alinhamento, escolhe o carácter mais frequente.
+Em caso de empate, escolhe o primeiro carácter que aparece nessa coluna.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alinhamento</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Lista de sequências já alinhadas (todas com o
+mesmo comprimento), tipicamente contendo gaps <code class="docutils literal notranslate"><span class="pre">'-'</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sequência consenso (inclui gaps se forem o símbolo mais frequente).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">alinhamento</span></code> não for iterável.</p></li>
+<li><p><strong>ValueError</strong> – Se as sequências em <code class="docutils literal notranslate"><span class="pre">alinhamento</span></code> não tiverem o mesmo comprimento.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">consenso_multiplas</span><span class="p">([</span><span class="s2">&quot;A-C&quot;</span><span class="p">,</span> <span class="s2">&quot;ACC&quot;</span><span class="p">,</span> <span class="s2">&quot;A-C&quot;</span><span class="p">])</span>
+<span class="go">&#39;A-C&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.alinhamento.dot_plot">
 <span class="sig-prename descclassname"><span class="pre">bioinf.alinhamento.</span></span><span class="sig-name descname"><span class="pre">dot_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/alinhamento.html#dot_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.alinhamento.dot_plot" title="Link to this definition"></a></dt>
-<dd><p>Cria matriz de pontos (1 = match, 0 = mismatch).</p>
+<dd><p>Cria uma matriz de pontos (dot plot) binária entre duas sequências.</p>
+<p>Produz uma matriz <code class="docutils literal notranslate"><span class="pre">len(seq1)</span> <span class="pre">x</span> <span class="pre">len(seq2)</span></code> em que cada célula vale:
+- <code class="docutils literal notranslate"><span class="pre">1</span></code> se os caracteres forem iguais (match),
+- <code class="docutils literal notranslate"><span class="pre">0</span></code> caso contrário (mismatch).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq1</strong> (<em>str</em>) – Primeira sequência.</p></li>
+<li><p><strong>seq2</strong> (<em>str</em>) – Segunda sequência.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Matriz de inteiros (0/1) com dimensão
+<code class="docutils literal notranslate"><span class="pre">len(seq1)</span> <span class="pre">x</span> <span class="pre">len(seq2)</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[list[int]]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dot_plot</span><span class="p">(</span><span class="s2">&quot;AC&quot;</span><span class="p">,</span> <span class="s2">&quot;AGC&quot;</span><span class="p">)</span>
+<span class="go">[[1, 0, 0], [0, 0, 1]]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.alinhamento.needleman_wunsch">
 <span class="sig-prename descclassname"><span class="pre">bioinf.alinhamento.</span></span><span class="sig-name descname"><span class="pre">needleman_wunsch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matriz_subst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'A':</span> <span class="pre">{'A':</span> <span class="pre">4,</span> <span class="pre">'C':</span> <span class="pre">0,</span> <span class="pre">'G':</span> <span class="pre">0,</span> <span class="pre">'T':</span> <span class="pre">0},</span> <span class="pre">'C':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">9,</span> <span class="pre">'G':</span> <span class="pre">-3,</span> <span class="pre">'T':</span> <span class="pre">-1},</span> <span class="pre">'G':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">-3,</span> <span class="pre">'G':</span> <span class="pre">6,</span> <span class="pre">'T':</span> <span class="pre">-2},</span> <span class="pre">'T':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">-1,</span> <span class="pre">'G':</span> <span class="pre">-2,</span> <span class="pre">'T':</span> <span class="pre">5}}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/alinhamento.html#needleman_wunsch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.alinhamento.needleman_wunsch" title="Link to this definition"></a></dt>
-<dd><p>Alinhamento global (Needleman-Wunsch).</p>
+<dd><p>Executa alinhamento global (Needleman–Wunsch) entre duas sequências.</p>
+<p>Implementa a fase de preenchimento da matriz de scores para alinhamento global
+e, no final, reconstrói um alinhamento ótimo via traceback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq1</strong> (<em>str</em>) – Primeira sequência a alinhar.</p></li>
+<li><p><strong>seq2</strong> (<em>str</em>) – Segunda sequência a alinhar.</p></li>
+<li><p><strong>matriz_subst</strong> (<em>dict</em><em>, </em><em>optional</em>) – Matriz de substituição (ex.: BLOSUM/PAM ou
+matriz custom). Por omissão usa <code class="docutils literal notranslate"><span class="pre">BLOSUM62</span></code>.</p></li>
+<li><p><strong>gap</strong> (<em>int</em><em>, </em><em>optional</em>) – Penalização linear de gap (inserção/deleção).
+Por omissão <code class="docutils literal notranslate"><span class="pre">-5</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Triplo <code class="docutils literal notranslate"><span class="pre">(seq1_alinhada,</span> <span class="pre">seq2_alinhada,</span> <span class="pre">score)</span></code>,
+onde <code class="docutils literal notranslate"><span class="pre">seq1_alinhada</span></code> e <code class="docutils literal notranslate"><span class="pre">seq2_alinhada</span></code> incluem gaps <code class="docutils literal notranslate"><span class="pre">'-'</span></code>, e
+<code class="docutils literal notranslate"><span class="pre">score</span></code> é o score ótimo do alinhamento global.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[str, str, int | float]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>KeyError</strong> – Se a matriz de substituição não contiver algum símbolo presente
+    nas sequências.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">sc</span> <span class="o">=</span> <span class="n">needleman_wunsch</span><span class="p">(</span><span class="s2">&quot;AC&quot;</span><span class="p">,</span> <span class="s2">&quot;AGC&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">a1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.alinhamento.score_subst">
 <span class="sig-prename descclassname"><span class="pre">bioinf.alinhamento.</span></span><span class="sig-name descname"><span class="pre">score_subst</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matriz</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/alinhamento.html#score_subst"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.alinhamento.score_subst" title="Link to this definition"></a></dt>
-<dd><p>Retorna o score de substituição entre dois caracteres.</p>
+<dd><p>Obtém o score de substituição entre dois símbolos.</p>
+<p>Esta função faz um acesso direto a <code class="docutils literal notranslate"><span class="pre">matriz[a][b]</span></code> e assume que a matriz
+está completa para os símbolos fornecidos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>str</em>) – Símbolo da sequência 1 (tipicamente um carácter).</p></li>
+<li><p><strong>b</strong> (<em>str</em>) – Símbolo da sequência 2 (tipicamente um carácter).</p></li>
+<li><p><strong>matriz</strong> (<em>dict</em>) – Matriz de substituição no formato
+<code class="docutils literal notranslate"><span class="pre">dict[símbolo][símbolo]</span> <span class="pre">-&gt;</span> <span class="pre">score</span></code> (ex.: PAM/BLOSUM ou matriz custom).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Score de substituição definido na matriz.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int | float</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>KeyError</strong> – Se <code class="docutils literal notranslate"><span class="pre">a</span></code> ou <code class="docutils literal notranslate"><span class="pre">b</span></code> não existir na matriz fornecida.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">score_subst</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+<span class="go">-1</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.alinhamento.smith_waterman">
 <span class="sig-prename descclassname"><span class="pre">bioinf.alinhamento.</span></span><span class="sig-name descname"><span class="pre">smith_waterman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matriz_subst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'A':</span> <span class="pre">{'A':</span> <span class="pre">4,</span> <span class="pre">'C':</span> <span class="pre">0,</span> <span class="pre">'G':</span> <span class="pre">0,</span> <span class="pre">'T':</span> <span class="pre">0},</span> <span class="pre">'C':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">9,</span> <span class="pre">'G':</span> <span class="pre">-3,</span> <span class="pre">'T':</span> <span class="pre">-1},</span> <span class="pre">'G':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">-3,</span> <span class="pre">'G':</span> <span class="pre">6,</span> <span class="pre">'T':</span> <span class="pre">-2},</span> <span class="pre">'T':</span> <span class="pre">{'A':</span> <span class="pre">0,</span> <span class="pre">'C':</span> <span class="pre">-1,</span> <span class="pre">'G':</span> <span class="pre">-2,</span> <span class="pre">'T':</span> <span class="pre">5}}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/alinhamento.html#smith_waterman"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.alinhamento.smith_waterman" title="Link to this definition"></a></dt>
-<dd><p>Alinhamento local (Smith-Waterman).</p>
+<dd><p>Executa alinhamento local (Smith–Waterman) entre duas sequências.</p>
+<p>Implementa a fase de preenchimento da matriz de scores para alinhamento local,
+aplicando a regra de truncar a 0 (não permitir scores negativos), e depois
+reconstrói o melhor alinhamento local via traceback a partir da célula de
+score máximo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq1</strong> (<em>str</em>) – Primeira sequência a alinhar.</p></li>
+<li><p><strong>seq2</strong> (<em>str</em>) – Segunda sequência a alinhar.</p></li>
+<li><p><strong>matriz_subst</strong> (<em>dict</em><em>, </em><em>optional</em>) – Matriz de substituição (ex.: BLOSUM/PAM ou
+matriz custom). Por omissão usa <code class="docutils literal notranslate"><span class="pre">BLOSUM62</span></code>.</p></li>
+<li><p><strong>gap</strong> (<em>int</em><em>, </em><em>optional</em>) – Penalização linear de gap (inserção/deleção).
+Por omissão <code class="docutils literal notranslate"><span class="pre">-5</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Triplo <code class="docutils literal notranslate"><span class="pre">(subseq1_alinhada,</span> <span class="pre">subseq2_alinhada,</span> <span class="pre">score)</span></code>,
+onde as subsequências alinhadas correspondem ao melhor alinhamento local.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[str, str, int | float]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>KeyError</strong> – Se a matriz de substituição não contiver algum símbolo presente
+    nas sequências.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">sc</span> <span class="o">=</span> <span class="n">smith_waterman</span><span class="p">(</span><span class="s2">&quot;ACGT&quot;</span><span class="p">,</span> <span class="s2">&quot;TACG&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sc</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function" id="module-bioinf.motifs">
 <dt class="sig sig-object py" id="bioinf.motifs.criar_pwm">
 <span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">criar_pwm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lista_seqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudocount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#criar_pwm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.criar_pwm" title="Link to this definition"></a></dt>
-<dd><p>Cria uma PWM a partir de uma lista de sequências.</p>
+<dd><p>Cria uma PWM (Position Weight Matrix) a partir de uma lista de sequências.</p>
+<p>Esta implementação assume:
+- alfabeto fixo <code class="docutils literal notranslate"><span class="pre">&quot;ACGT&quot;</span></code>;
+- todas as sequências têm o mesmo comprimento (usa o comprimento da primeira);
+- aplica pseudocounts para evitar probabilidades zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lista_seqs</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Lista de sequências (mesmo comprimento).</p></li>
+<li><p><strong>pseudocount</strong> (<em>int</em><em>, </em><em>optional</em>) – Valor inicial somado às contagens de cada base
+em cada coluna. Por omissão <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>PWM representada como lista de colunas; cada coluna
+é um dicionário <code class="docutils literal notranslate"><span class="pre">{'A':pA,</span> <span class="pre">'C':pC,</span> <span class="pre">'G':pG,</span> <span class="pre">'T':pT}</span></code>.
+Se <code class="docutils literal notranslate"><span class="pre">lista_seqs</span></code> estiver vazia, devolve <code class="docutils literal notranslate"><span class="pre">[]</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[dict[str, float]]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>IndexError</strong> – Se existirem sequências com comprimento menor do que a primeira.</p></li>
+<li><p><strong>KeyError</strong> – Se aparecerem símbolos fora de A/C/G/T (ao indexar contagens).</p></li>
+<li><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">lista_seqs</span></code> não for iterável.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">criar_pwm</span><span class="p">([</span><span class="s2">&quot;AAA&quot;</span><span class="p">,</span> <span class="s2">&quot;AAT&quot;</span><span class="p">],</span> <span class="n">pseudocount</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">2</span><span class="p">][</span><span class="s2">&quot;A&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">criar_pwm</span><span class="p">([</span><span class="s2">&quot;AAA&quot;</span><span class="p">,</span> <span class="s2">&quot;AAT&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">2</span><span class="p">][</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.motifs.enzima_para_regex">
 <span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">enzima_para_regex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sitio</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#enzima_para_regex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.enzima_para_regex" title="Link to this definition"></a></dt>
-<dd><p>Converte sítio de enzima (ex: G^AATTC) em sequência e posição de corte.</p>
+<dd><p>Interpreta um sítio de restrição com marca de corte.</p>
+<p>Recebe uma string com o símbolo <code class="docutils literal notranslate"><span class="pre">^</span></code> a indicar a posição de corte
+(ex.: <code class="docutils literal notranslate"><span class="pre">&quot;G^AATTC&quot;</span></code>) e devolve:
+- a sequência do sítio sem <code class="docutils literal notranslate"><span class="pre">^</span></code>,
+- a posição de corte relativa ao início do sítio (0-based).</p>
+<dl class="simple">
+<dt>Nota:</dt><dd><p>Apesar do nome, esta função <strong>não</strong> converte códigos de ambiguidade para
+regex; devolve apenas a sequência literal e o índice do corte.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sitio</strong> (<em>str</em>) – Sítio de enzima com <code class="docutils literal notranslate"><span class="pre">^</span></code> (ex.: <code class="docutils literal notranslate"><span class="pre">&quot;G^AATTC&quot;</span></code>).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(seq,</span> <span class="pre">corte)</span></code>, onde:
+- <code class="docutils literal notranslate"><span class="pre">seq</span></code> é o sítio sem <code class="docutils literal notranslate"><span class="pre">^</span></code>,
+- <code class="docutils literal notranslate"><span class="pre">corte</span></code> é o índice (0-based) em <code class="docutils literal notranslate"><span class="pre">seq</span></code> onde ocorre o corte.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[str, int]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Se <code class="docutils literal notranslate"><span class="pre">'^'</span></code> não existir em <code class="docutils literal notranslate"><span class="pre">sitio</span></code> (por causa de <code class="docutils literal notranslate"><span class="pre">index</span></code>).</p></li>
+<li><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">sitio</span></code> não for string.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">enzima_para_regex</span><span class="p">(</span><span class="s2">&quot;G^AATTC&quot;</span><span class="p">)</span>
+<span class="go">(&#39;GAATTC&#39;, 1)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.motifs.fragmentar_dna">
 <span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">fragmentar_dna</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sequencia</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sitio_enzima</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#fragmentar_dna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.fragmentar_dna" title="Link to this definition"></a></dt>
-<dd><p>Fragmenta uma sequência de DNA com base num sítio de enzima de restrição.</p>
+<dd><p>Fragmenta uma sequência de DNA com base num sítio de restrição.</p>
+<p>O processo é:
+1) Extrair o padrão do sítio e a posição de corte (via <a class="reference internal" href="#bioinf.motifs.enzima_para_regex" title="bioinf.motifs.enzima_para_regex"><code class="xref py py-func docutils literal notranslate"><span class="pre">enzima_para_regex()</span></code></a>).
+2) Encontrar todas as ocorrências do padrão na sequência (como <em>match literal</em>).
+3) Gerar as posições de corte (offset + corte) e devolver os fragmentos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sequencia</strong> (<em>str</em>) – Sequência de DNA a fragmentar.</p></li>
+<li><p><strong>sitio_enzima</strong> (<em>str</em>) – Sítio com marca de corte <code class="docutils literal notranslate"><span class="pre">^</span></code> (ex.: <code class="docutils literal notranslate"><span class="pre">&quot;G^AATTC&quot;</span></code>).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(fragmentos,</span> <span class="pre">cortes)</span></code>, onde:
+- <code class="docutils literal notranslate"><span class="pre">fragmentos</span></code> é a lista de fragmentos resultantes (strings),
+- <code class="docutils literal notranslate"><span class="pre">cortes</span></code> é a lista de posições de corte (0-based) na sequência original.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[list[str], list[int]]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Se <code class="docutils literal notranslate"><span class="pre">sitio_enzima</span></code> não contiver <code class="docutils literal notranslate"><span class="pre">^</span></code>.</p></li>
+<li><p><strong>re.error</strong> – Se o padrão produzir um erro de regex (pouco provável aqui porque é literal).</p></li>
+<li><p><strong>TypeError</strong> – Se os argumentos não forem strings.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fragmentar_dna</span><span class="p">(</span><span class="s2">&quot;TTGAATTCAA&quot;</span><span class="p">,</span> <span class="s2">&quot;G^AATTC&quot;</span><span class="p">)</span>
+<span class="go">([&#39;TTG&#39;, &#39;AATTCAA&#39;], [3])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.motifs.probabilidade_seq_pwm">
 <span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">probabilidade_seq_pwm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pwm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequencia</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#probabilidade_seq_pwm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.probabilidade_seq_pwm" title="Link to this definition"></a></dt>
-<dd><p>Calcula a probabilidade de uma sequência gerar a PWM.</p>
+<dd><p>Calcula a probabilidade de uma sequência segundo uma PWM.</p>
+<p>A probabilidade é o produto das probabilidades por posição:
+<code class="docutils literal notranslate"><span class="pre">prod_i</span> <span class="pre">PWM[i][base_i]</span></code>.
+Se uma base não existir na coluna, considera-se probabilidade 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pwm</strong> (<em>list</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em><em>]</em>) – PWM no formato devolvido por <a class="reference internal" href="#bioinf.motifs.criar_pwm" title="bioinf.motifs.criar_pwm"><code class="xref py py-func docutils literal notranslate"><span class="pre">criar_pwm()</span></code></a>.</p></li>
+<li><p><strong>sequencia</strong> (<em>str</em>) – Sequência (tipicamente com comprimento igual ao da PWM).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Probabilidade (pode ser 0.0).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>IndexError</strong> – Se <code class="docutils literal notranslate"><span class="pre">sequencia</span></code> for maior do que o comprimento do PWM.</p></li>
+<li><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">pwm</span></code> não for uma lista de dicionários.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwm</span> <span class="o">=</span> <span class="n">criar_pwm</span><span class="p">([</span><span class="s2">&quot;AAAA&quot;</span><span class="p">,</span> <span class="s2">&quot;AAAT&quot;</span><span class="p">],</span> <span class="n">pseudocount</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">probabilidade_seq_pwm</span><span class="p">(</span><span class="n">pwm</span><span class="p">,</span> <span class="s2">&quot;AAAA&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">probabilidade_seq_pwm</span><span class="p">(</span><span class="n">pwm</span><span class="p">,</span> <span class="s2">&quot;TTTT&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.motifs.procurar_motifs">
 <span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">procurar_motifs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sequencia</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padrao_prosite</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#procurar_motifs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.procurar_motifs" title="Link to this definition"></a></dt>
-<dd><p>Procura posições de motifs na sequência usando padrão PROSITE.</p>
+<dd><p>Procura ocorrências de um motif PROSITE numa sequência.</p>
+<p>Converte o padrão PROSITE para regex (via <a class="reference internal" href="#bioinf.motifs.prosite_para_regex" title="bioinf.motifs.prosite_para_regex"><code class="xref py py-func docutils literal notranslate"><span class="pre">prosite_para_regex()</span></code></a>) e usa
+<code class="xref py py-func docutils literal notranslate"><span class="pre">re.finditer()</span></code> para obter as posições iniciais (0-based) de cada match.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sequencia</strong> (<em>str</em>) – Sequência onde procurar (DNA/RNA/proteína, dependendo do padrão).</p></li>
+<li><p><strong>padrao_prosite</strong> (<em>str</em>) – Padrão no formato PROSITE.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Lista de posições iniciais (0-based) onde o motif ocorre.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[int]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>re.error</strong> – Se o padrão convertido gerar uma regex inválida.</p></li>
+<li><p><strong>TypeError</strong> – Se os argumentos não forem strings.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">procurar_motifs</span><span class="p">(</span><span class="s2">&quot;ACCCAC&quot;</span><span class="p">,</span> <span class="s2">&quot;C-x(2)-C&quot;</span><span class="p">)</span>
+<span class="go">[1]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.motifs.prosite_para_regex">
 <span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">prosite_para_regex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">padrao</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#prosite_para_regex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.prosite_para_regex" title="Link to this definition"></a></dt>
-<dd><p>Converte um padrão PROSITE para expressão regular.
-Suporta x, { }, (n), (n,m), &lt; &gt;</p>
+<dd><p>Converte um padrão PROSITE para uma expressão regular (regex) equivalente.</p>
+<p>Implementa uma conversão simples para suportar construções comuns de PROSITE:
+- <code class="docutils literal notranslate"><span class="pre">-</span></code> (separador) é removido;
+- <code class="docutils literal notranslate"><span class="pre">x</span></code> vira <code class="docutils literal notranslate"><span class="pre">.</span></code> (qualquer carácter);
+- <code class="docutils literal notranslate"><span class="pre">{...}</span></code> vira classe negada <code class="docutils literal notranslate"><span class="pre">[^...]</span></code>;
+- <code class="docutils literal notranslate"><span class="pre">(n)</span></code> e <code class="docutils literal notranslate"><span class="pre">(n,m)</span></code> viram quantificadores regex <code class="docutils literal notranslate"><span class="pre">{n}</span></code> e <code class="docutils literal notranslate"><span class="pre">{n,m}</span></code>;
+- <code class="docutils literal notranslate"><span class="pre">&lt;</span></code> no início ancora ao início da string (<code class="docutils literal notranslate"><span class="pre">^</span></code>);
+- <code class="docutils literal notranslate"><span class="pre">&gt;</span></code> no fim ancora ao fim da string (<code class="docutils literal notranslate"><span class="pre">$</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>padrao</strong> (<em>str</em>) – Padrão PROSITE (ex.: <code class="docutils literal notranslate"><span class="pre">&quot;C-x(2)-C&quot;</span></code>).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Expressão regular compatível com o módulo <code class="xref py py-mod docutils literal notranslate"><span class="pre">re</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">padrao</span></code> não for string.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prosite_para_regex</span><span class="p">(</span><span class="s2">&quot;C-x(2)-C&quot;</span><span class="p">)</span>
+<span class="go">&#39;C.{2}C&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prosite_para_regex</span><span class="p">(</span><span class="s2">&quot;&lt;A-x(3)-G&gt;&quot;</span><span class="p">)</span>
+<span class="go">&#39;^A.{3}G$&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prosite_para_regex</span><span class="p">(</span><span class="s2">&quot;C-</span><span class="si">{GP}</span><span class="s2">-x-C&quot;</span><span class="p">)</span>
+<span class="go">&#39;C[^GP].C&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.motifs.pwm_para_pssm">
 <span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">pwm_para_pssm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pwm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#pwm_para_pssm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.pwm_para_pssm" title="Link to this definition"></a></dt>
-<dd><p>Converte PWM em PSSM usando log2 odds.</p>
+<dd><p>Converte uma PWM numa PSSM usando log2-odds.</p>
+<p>Para cada posição e base calcula:
+<code class="docutils literal notranslate"><span class="pre">log2(P(base|posição)</span> <span class="pre">/</span> <span class="pre">P(base|background))</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pwm</strong> (<em>list</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em><em>]</em>) – PWM (lista de colunas).</p></li>
+<li><p><strong>bg</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>] </em><em>| </em><em>None</em><em>, </em><em>optional</em>) – Distribuição de background.
+Se <code class="docutils literal notranslate"><span class="pre">None</span></code>, assume uniforme (0.25 para A/C/G/T).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>PSSM no mesmo formato (lista de colunas), mas com
+scores log-odds em vez de probabilidades.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[dict[str, float]]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>KeyError</strong> – Se <code class="docutils literal notranslate"><span class="pre">bg</span></code> não tiver uma base presente no PWM.</p></li>
+<li><p><strong>ValueError</strong> – Se alguma probabilidade for 0 (pode gerar divisão por zero).
+    (Nota: com pseudocounts &gt; 0 isto é menos provável.)</p></li>
+<li><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">pwm</span></code>/<code class="docutils literal notranslate"><span class="pre">bg</span></code> forem de tipos inválidos.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwm</span> <span class="o">=</span> <span class="n">criar_pwm</span><span class="p">([</span><span class="s2">&quot;AAAA&quot;</span><span class="p">,</span> <span class="s2">&quot;AAAT&quot;</span><span class="p">],</span> <span class="n">pseudocount</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pssm</span> <span class="o">=</span> <span class="n">pwm_para_pssm</span><span class="p">(</span><span class="n">pwm</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">pssm</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;A&quot;</span><span class="p">],</span> <span class="nb">float</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.motifs.score_seq_pssm">
 <span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">score_seq_pssm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pssm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequencia</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#score_seq_pssm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.score_seq_pssm" title="Link to this definition"></a></dt>
-<dd><p>Calcula o score de uma sequência usando PSSM.</p>
+<dd><p>Calcula o score total de uma sequência segundo uma PSSM.</p>
+<p>Soma os scores por posição. Se uma base não existir numa coluna da PSSM,
+atribui <code class="docutils literal notranslate"><span class="pre">-inf</span></code> a essa posição (via <code class="docutils literal notranslate"><span class="pre">-float('inf')</span></code>), tornando o score final
+muito baixo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pssm</strong> (<em>list</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em><em>]</em>) – PSSM no formato devolvido por <a class="reference internal" href="#bioinf.motifs.pwm_para_pssm" title="bioinf.motifs.pwm_para_pssm"><code class="xref py py-func docutils literal notranslate"><span class="pre">pwm_para_pssm()</span></code></a>.</p></li>
+<li><p><strong>sequencia</strong> (<em>str</em>) – Sequência a pontuar (tipicamente com comprimento igual ao da PSSM).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Score total (pode ser <code class="docutils literal notranslate"><span class="pre">-inf</span></code> se houver bases desconhecidas).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>IndexError</strong> – Se <code class="docutils literal notranslate"><span class="pre">sequencia</span></code> for maior do que o comprimento da PSSM.</p></li>
+<li><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">pssm</span></code> não for uma lista de dicionários.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwm</span> <span class="o">=</span> <span class="n">criar_pwm</span><span class="p">([</span><span class="s2">&quot;AAAA&quot;</span><span class="p">,</span> <span class="s2">&quot;AAAT&quot;</span><span class="p">],</span> <span class="n">pseudocount</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pssm</span> <span class="o">=</span> <span class="n">pwm_para_pssm</span><span class="p">(</span><span class="n">pwm</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">score_seq_pssm</span><span class="p">(</span><span class="n">pssm</span><span class="p">,</span> <span class="s2">&quot;AAAA&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">score_seq_pssm</span><span class="p">(</span><span class="n">pssm</span><span class="p">,</span> <span class="s2">&quot;TTTT&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.motifs.subsequencia_mais_provavel">
 <span class="sig-prename descclassname"><span class="pre">bioinf.motifs.</span></span><span class="sig-name descname"><span class="pre">subsequencia_mais_provavel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pwm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequencia_alvo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/motifs.html#subsequencia_mais_provavel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.motifs.subsequencia_mais_provavel" title="Link to this definition"></a></dt>
-<dd><p>Encontra a subsequência mais provável na sequência alvo com base na PWM.</p>
+<dd><p>Encontra a subsequência mais provável numa sequência alvo dada uma PWM.</p>
+<p>Varre todas as janelas contíguas de tamanho <code class="docutils literal notranslate"><span class="pre">len(pwm)</span></code> e calcula a
+probabilidade de cada janela com <a class="reference internal" href="#bioinf.motifs.probabilidade_seq_pwm" title="bioinf.motifs.probabilidade_seq_pwm"><code class="xref py py-func docutils literal notranslate"><span class="pre">probabilidade_seq_pwm()</span></code></a>, devolvendo
+a melhor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pwm</strong> (<em>list</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em><em>]</em>) – PWM (lista de colunas).</p></li>
+<li><p><strong>sequencia_alvo</strong> (<em>str</em>) – Sequência onde procurar (target).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(pos,</span> <span class="pre">subseq,</span> <span class="pre">prob)</span></code>, onde:
+- <code class="docutils literal notranslate"><span class="pre">pos</span></code> é a posição inicial (0-based) da melhor subsequência,
+- <code class="docutils literal notranslate"><span class="pre">subseq</span></code> é a subsequência encontrada,
+- <code class="docutils literal notranslate"><span class="pre">prob</span></code> é a probabilidade dessa subsequência.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[int, str, float]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Se <code class="docutils literal notranslate"><span class="pre">pwm</span></code> estiver vazio (o código assume tamanho &gt; 0).</p></li>
+<li><p><strong>IndexError</strong> – Se <code class="docutils literal notranslate"><span class="pre">sequencia_alvo</span></code> for menor do que <code class="docutils literal notranslate"><span class="pre">len(pwm)</span></code>.</p></li>
+<li><p><strong>TypeError</strong> – Se os argumentos forem de tipos inválidos.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pwm</span> <span class="o">=</span> <span class="n">criar_pwm</span><span class="p">([</span><span class="s2">&quot;AAA&quot;</span><span class="p">,</span> <span class="s2">&quot;AAT&quot;</span><span class="p">],</span> <span class="n">pseudocount</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">subsequencia_mais_provavel</span><span class="p">(</span><span class="n">pwm</span><span class="p">,</span> <span class="s2">&quot;TTTAAATTT&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">3</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function" id="module-bioinf.filogenia">
 <dt class="sig sig-object py" id="bioinf.filogenia.distancia_levenshtein">
 <span class="sig-prename descclassname"><span class="pre">bioinf.filogenia.</span></span><span class="sig-name descname"><span class="pre">distancia_levenshtein</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/filogenia.html#distancia_levenshtein"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.filogenia.distancia_levenshtein" title="Link to this definition"></a></dt>
 <dd><p>Calcula a distância de edição (Levenshtein) entre duas strings.</p>
+<p>A distância de Levenshtein é o número mínimo de operações para transformar
+<code class="docutils literal notranslate"><span class="pre">seq1</span></code> em <code class="docutils literal notranslate"><span class="pre">seq2</span></code>, onde as operações permitidas são:
+- inserção,
+- deleção,
+- substituição.</p>
+<p>Implementação por programação dinâmica com matriz de dimensão
+<code class="docutils literal notranslate"><span class="pre">(len(seq1)+1)</span> <span class="pre">x</span> <span class="pre">(len(seq2)+1)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq1</strong> (<em>str</em>) – Primeira string/sequência.</p></li>
+<li><p><strong>seq2</strong> (<em>str</em>) – Segunda string/sequência.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Distância de Levenshtein entre <code class="docutils literal notranslate"><span class="pre">seq1</span></code> e <code class="docutils literal notranslate"><span class="pre">seq2</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">seq1</span></code> ou <code class="docutils literal notranslate"><span class="pre">seq2</span></code> não forem strings (ou não suportarem <code class="docutils literal notranslate"><span class="pre">len</span></code> e indexação).</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">distancia_levenshtein</span><span class="p">(</span><span class="s2">&quot;GATTACA&quot;</span><span class="p">,</span> <span class="s2">&quot;GATTTCA&quot;</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">distancia_levenshtein</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;ABC&quot;</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.filogenia.matriz_distancias">
 <span class="sig-prename descclassname"><span class="pre">bioinf.filogenia.</span></span><span class="sig-name descname"><span class="pre">matriz_distancias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seqs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/filogenia.html#matriz_distancias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.filogenia.matriz_distancias" title="Link to this definition"></a></dt>
-<dd><p>Constrói a matriz de distâncias par-a-par entre sequências.</p>
+<dd><p>Constrói uma matriz de distâncias par-a-par para um conjunto de sequências.</p>
+<p>A distância usada é a distância de Levenshtein calculada por
+<a class="reference internal" href="#bioinf.filogenia.distancia_levenshtein" title="bioinf.filogenia.distancia_levenshtein"><code class="xref py py-func docutils literal notranslate"><span class="pre">distancia_levenshtein()</span></code></a>.</p>
+<p>A matriz é representada como um dicionário com chaves <code class="docutils literal notranslate"><span class="pre">(seq_i,</span> <span class="pre">seq_j)</span></code>.
+O resultado inclui entradas simétricas, isto é, guarda (i,j) e (j,i).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seqs</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Lista de sequências/strings.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dicionário com as distâncias par-a-par.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[tuple[str, str], int]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">seqs</span></code> não for iterável.</p></li>
+<li><p><strong>ValueError</strong> – Se <code class="docutils literal notranslate"><span class="pre">seqs</span></code> tiver menos de 2 sequências (a matriz ficará vazia).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">matriz_distancias</span><span class="p">([</span><span class="s2">&quot;AA&quot;</span><span class="p">,</span> <span class="s2">&quot;AB&quot;</span><span class="p">,</span> <span class="s2">&quot;BB&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="p">[(</span><span class="s2">&quot;AA&quot;</span><span class="p">,</span> <span class="s2">&quot;AB&quot;</span><span class="p">)]</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="p">[(</span><span class="s2">&quot;AB&quot;</span><span class="p">,</span> <span class="s2">&quot;AA&quot;</span><span class="p">)]</span>
+<span class="go">1</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.filogenia.upgma">
 <span class="sig-prename descclassname"><span class="pre">bioinf.filogenia.</span></span><span class="sig-name descname"><span class="pre">upgma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seqs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/filogenia.html#upgma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.filogenia.upgma" title="Link to this definition"></a></dt>
-<dd><p>Constrói uma árvore filogenética simplificada usando UPGMA.
-A distância entre clusters é a média das distâncias entre as sequências.</p>
+<dd><p>Constrói uma árvore filogenética simplificada usando UPGMA.</p>
+<p>UPGMA (Unweighted Pair Group Method with Arithmetic Mean) é um método de
+clustering hierárquico que, a cada iteração:
+- escolhe o par de clusters com menor distância média,
+- funde-os num novo cluster,
+- repete até existir um único cluster.</p>
+<p>Nesta implementação:
+- a distância base entre sequências é Levenshtein,
+- a distância entre clusters é a média das distâncias entre todas as pares</p>
+<blockquote>
+<div><p>de sequências (um de cada cluster),</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>a árvore devolvida é uma estrutura de tuplos aninhados (ex.: <code class="docutils literal notranslate"><span class="pre">('A',</span> <span class="pre">('B','C'))</span></code>),
+não um objeto com comprimentos de ramos.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>seqs</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Lista de sequências/strings a agrupar.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Raiz da árvore (cluster final), representada como:
+- uma string (se só houver uma sequência), ou
+- um tuplo <code class="docutils literal notranslate"><span class="pre">(cluster1,</span> <span class="pre">cluster2)</span></code> recursivamente.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>IndexError</strong> – Se <code class="docutils literal notranslate"><span class="pre">seqs</span></code> estiver vazio (o código assume pelo menos 1 sequência).</p></li>
+<li><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">seqs</span></code> não for iterável.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">upgma</span><span class="p">([</span><span class="s2">&quot;AA&quot;</span><span class="p">,</span> <span class="s2">&quot;AB&quot;</span><span class="p">,</span> <span class="s2">&quot;BB&quot;</span><span class="p">])</span>
+<span class="go">((&#39;AA&#39;, &#39;AB&#39;), &#39;BB&#39;)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function" id="module-bioinf.blast">
 <dt class="sig sig-object py" id="bioinf.blast.blast_simplificado">
 <span class="sig-prename descclassname"><span class="pre">bioinf.blast.</span></span><span class="sig-name descname"><span class="pre">blast_simplificado</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq_alvo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/blast.html#blast_simplificado"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.blast.blast_simplificado" title="Link to this definition"></a></dt>
-<dd><p>Executa um BLAST simplificado:
-- Cria query map (k-mers)
-- Identifica hits
-- Estende hits para melhor alinhamento local (HSP)</p>
+<dd><p>Executa um BLAST simplificado (seed-and-extend) entre uma query e uma sequência alvo.</p>
+<p>Pipeline implementado:
+1) Constrói um <em>query map</em> com todos os k-mers (tamanho <code class="docutils literal notranslate"><span class="pre">w</span></code>) da query.
+2) Percorre a sequência alvo para encontrar <em>hits</em> (k-mers presentes no mapa).
+3) Para cada hit, estende à esquerda e à direita para obter um HSP</p>
+<blockquote>
+<div><p>(High-scoring Segment Pair) e escolhe o melhor.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – Sequência de consulta (query).</p></li>
+<li><p><strong>seq_alvo</strong> (<em>str</em>) – Sequência alvo (target/database sequence) onde procurar hits.</p></li>
+<li><p><strong>w</strong> (<em>int</em><em>, </em><em>optional</em>) – Tamanho da palavra (k-mer) usada como seed. Por omissão <code class="docutils literal notranslate"><span class="pre">3</span></code>.</p></li>
+<li><p><strong>match</strong> (<em>int</em><em>, </em><em>optional</em>) – Score atribuído a match durante a extensão. Por omissão <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p></li>
+<li><p><strong>mismatch</strong> (<em>int</em><em>, </em><em>optional</em>) – Penalização atribuída a mismatch durante a extensão.
+Por omissão <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>sub_q (str): Subsequência da query correspondente ao melhor HSP.</p></li>
+<li><p>sub_t (str): Subsequência da sequência alvo correspondente ao melhor HSP.</p></li>
+<li><p>score (int): Score do melhor HSP encontrado.</p></li>
+<li><p>t_start (int): Posição inicial (0-based) do HSP na sequência alvo.
+Se não houver hits, devolve <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[str, str, int, int]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Se <code class="docutils literal notranslate"><span class="pre">w</span></code> for maior do que o comprimento da query (pode levar a
+    mapa vazio) ou maior do que o comprimento da sequência alvo (sem seeds).
+    (Nota: o código atual não valida explicitamente; este erro é uma sugestão
+    de validação para robustez.)</p></li>
+<li><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">query</span></code> ou <code class="docutils literal notranslate"><span class="pre">seq_alvo</span></code> não forem strings.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">blast_simplificado</span><span class="p">(</span><span class="s2">&quot;ACGTAC&quot;</span><span class="p">,</span> <span class="s2">&quot;TTACGTAA&quot;</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">(&#39;ACG&#39;, &#39;ACG&#39;, 6, 2)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.blast.construir_mapa">
 <span class="sig-prename descclassname"><span class="pre">bioinf.blast.</span></span><span class="sig-name descname"><span class="pre">construir_mapa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/blast.html#construir_mapa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.blast.construir_mapa" title="Link to this definition"></a></dt>
-<dd><p>Cria um mapa da query ({k-mer: posições}) para identificação de hits.</p>
+<dd><p>Constrói o <em>query map</em> (índice de seeds) para BLAST simplificado.</p>
+<p>Cria um dicionário onde cada k-mer (tamanho <code class="docutils literal notranslate"><span class="pre">w</span></code>) da query aponta para uma lista
+das posições (0-based) onde esse k-mer ocorre na query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – Sequência de consulta (query).</p></li>
+<li><p><strong>w</strong> (<em>int</em>) – Tamanho do k-mer (seed/word size).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dicionário do tipo <code class="docutils literal notranslate"><span class="pre">{kmer:</span> <span class="pre">[pos1,</span> <span class="pre">pos2,</span> <span class="pre">...]}</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, list[int]]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">query</span></code> não for string ou <code class="docutils literal notranslate"><span class="pre">w</span></code> não for inteiro.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">construir_mapa</span><span class="p">(</span><span class="s2">&quot;ACGTA&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">{&#39;ACG&#39;: [0], &#39;CGT&#39;: [1], &#39;GTA&#39;: [2]}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.blast.encontrar_hits">
 <span class="sig-prename descclassname"><span class="pre">bioinf.blast.</span></span><span class="sig-name descname"><span class="pre">encontrar_hits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/blast.html#encontrar_hits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.blast.encontrar_hits" title="Link to this definition"></a></dt>
-<dd><p>Identifica hits entre o query map e a sequência alvo.</p>
+<dd><p>Encontra <em>hits</em> (seeds coincidentes) entre a sequência alvo e o query map.</p>
+<p>Percorre todos os k-mers (tamanho <code class="docutils literal notranslate"><span class="pre">w</span></code>) da sequência alvo e, quando um k-mer
+existir no <code class="docutils literal notranslate"><span class="pre">mapa</span></code> da query, gera um hit por cada posição de ocorrência na query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq</strong> (<em>str</em>) – Sequência alvo (target) onde procurar.</p></li>
+<li><p><strong>mapa</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Query map produzido por <a class="reference internal" href="#bioinf.blast.construir_mapa" title="bioinf.blast.construir_mapa"><code class="xref py py-func docutils literal notranslate"><span class="pre">construir_mapa()</span></code></a>.</p></li>
+<li><p><strong>w</strong> (<em>int</em>) – Tamanho do k-mer (word size).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Lista de hits no formato <code class="docutils literal notranslate"><span class="pre">(pos_q,</span> <span class="pre">pos_t)</span></code>, onde:
+- <code class="docutils literal notranslate"><span class="pre">pos_q</span></code> é a posição do k-mer na query,
+- <code class="docutils literal notranslate"><span class="pre">pos_t</span></code> é a posição do k-mer na sequência alvo.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[tuple[int, int]]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">seq</span></code> não for string, ou <code class="docutils literal notranslate"><span class="pre">mapa</span></code> não for dicionário.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">encontrar_hits</span><span class="p">(</span><span class="s2">&quot;TTACGTAA&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;ACG&quot;</span><span class="p">:[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;CGT&quot;</span><span class="p">:[</span><span class="mi">1</span><span class="p">]},</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">[(0, 2), (1, 3)]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bioinf.blast.estender_hit">
 <span class="sig-prename descclassname"><span class="pre">bioinf.blast.</span></span><span class="sig-name descname"><span class="pre">estender_hit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mismatch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bioinf/blast.html#estender_hit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bioinf.blast.estender_hit" title="Link to this definition"></a></dt>
-<dd><p>Estende um hit para esquerda e direita para encontrar HSP.
-Complexidade reduzida para B ou A no Radon.</p>
+<dd><p>Estende um hit (seed) para obter um HSP (alinhamento local simplificado).</p>
+<p>A partir de um hit inicial (k-mer coincidente), tenta estender em duas direções:
+- para a esquerda (índices decrescentes),
+- para a direita (índices crescentes),
+acumulando um score simples de match/mismatch.</p>
+<p>A extensão pára quando:
+- sai dos limites das sequências, ou
+- o score cai abaixo de metade do melhor score observado durante a extensão</p>
+<blockquote>
+<div><p>(heurística de cutoff).</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<em>str</em>) – Sequência de consulta.</p></li>
+<li><p><strong>seq</strong> (<em>str</em>) – Sequência alvo.</p></li>
+<li><p><strong>hit</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – Par <code class="docutils literal notranslate"><span class="pre">(pos_q,</span> <span class="pre">pos_t)</span></code> com as posições iniciais do seed.</p></li>
+<li><p><strong>w</strong> (<em>int</em>) – Tamanho do seed (k-mer) usado no hit.</p></li>
+<li><p><strong>match</strong> (<em>int</em>) – Score para match.</p></li>
+<li><p><strong>mismatch</strong> (<em>int</em>) – Penalização para mismatch.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuplo <code class="docutils literal notranslate"><span class="pre">(score,</span> <span class="pre">q_start,</span> <span class="pre">t_start,</span> <span class="pre">length)</span></code>, onde:
+- <code class="docutils literal notranslate"><span class="pre">score</span></code> é o melhor score atingido durante a extensão,
+- <code class="docutils literal notranslate"><span class="pre">q_start</span></code> é a posição inicial (0-based) na query,
+- <code class="docutils literal notranslate"><span class="pre">t_start</span></code> é a posição inicial (0-based) no alvo,
+- <code class="docutils literal notranslate"><span class="pre">length</span></code> é o comprimento do segmento alinhado (sem gaps).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[int, int, int, int]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – Se <code class="docutils literal notranslate"><span class="pre">hit</span></code> não for um tuplo com dois inteiros.</p></li>
+<li><p><strong>IndexError</strong> – Se <code class="docutils literal notranslate"><span class="pre">hit</span></code> contiver posições fora dos limites (o código assume hit válido).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">estender_hit</span><span class="p">(</span><span class="s2">&quot;ACGTAC&quot;</span><span class="p">,</span> <span class="s2">&quot;TTACGTAA&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">(6, 0, 2, 3)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

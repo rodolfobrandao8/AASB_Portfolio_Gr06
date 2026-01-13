@@ -72,9 +72,30 @@
 <div class="viewcode-block" id="validar_dna">
 <a class="viewcode-back" href="../../modules.html#bioinf.sequencias.validar_dna">[docs]</a>
 <span></span><span class="k">def</span><span class="w"> </span><span class="nf">validar_dna</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Valida se uma sequência contém apenas nucleótidos de DNA (A, C, G, T).</span>
-<span class="sd">    Retorna True se válido, False caso contrário.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Valida se uma sequência contém apenas nucleótidos de DNA.</span>
+
+<span class="sd">    Aceita as bases ``A, C, G, T`` (case-insensitive). Se a sequência for vazia</span>
+<span class="sd">    (``&quot;&quot;``/``None``/falsy), devolve ``False``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq (str): Sequência a validar.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: ``True`` se a sequência for não vazia e contiver apenas A/C/G/T;</span>
+<span class="sd">        caso contrário ``False``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        AttributeError: Se ``seq`` não for string e não tiver o método ``upper()``.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; validar_dna(&quot;ACGT&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; validar_dna(&quot;acgt&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; validar_dna(&quot;ACGU&quot;)</span>
+<span class="sd">        False</span>
+<span class="sd">        &gt;&gt;&gt; validar_dna(&quot;&quot;)</span>
+<span class="sd">        False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">seq</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -86,9 +107,28 @@
 <div class="viewcode-block" id="validar_rna">
 <a class="viewcode-back" href="../../modules.html#bioinf.sequencias.validar_rna">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">validar_rna</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Valida se uma sequência contém apenas nucleótidos de RNA (A, C, G, U).</span>
-<span class="sd">    Retorna True se válido, False caso contrário.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Valida se uma sequência contém apenas nucleótidos de RNA.</span>
+
+<span class="sd">    Aceita as bases ``A, C, G, U`` (case-insensitive). Se a sequência for vazia</span>
+<span class="sd">    (``&quot;&quot;``/``None``/falsy), devolve ``False``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq (str): Sequência a validar.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: ``True`` se a sequência for não vazia e contiver apenas A/C/G/U;</span>
+<span class="sd">        caso contrário ``False``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        AttributeError: Se ``seq`` não for string e não tiver o método ``upper()``.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; validar_rna(&quot;ACGU&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; validar_rna(&quot;ACGT&quot;)</span>
+<span class="sd">        False</span>
+<span class="sd">        &gt;&gt;&gt; validar_rna(&quot;&quot;)</span>
+<span class="sd">        False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">seq</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -100,9 +140,29 @@
 <div class="viewcode-block" id="validar_proteina">
 <a class="viewcode-back" href="../../modules.html#bioinf.sequencias.validar_proteina">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">validar_proteina</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Valida se uma sequência contém apenas aminoácidos válidos (20 aminoácidos padrão).</span>
-<span class="sd">    Retorna True se válido, False caso contrário.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Valida se uma sequência contém apenas aminoácidos padrão (20 AA).</span>
+
+<span class="sd">    Aceita o alfabeto:</span>
+<span class="sd">    ``A, C, D, E, F, G, H, I, K, L, M, N, P, Q, R, S, T, V, W, Y`` (case-insensitive).</span>
+<span class="sd">    Se a sequência for vazia (``&quot;&quot;``/``None``/falsy), devolve ``False``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq (str): Sequência proteica a validar.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: ``True`` se a sequência for não vazia e contiver apenas aminoácidos</span>
+<span class="sd">        do conjunto aceite; caso contrário ``False``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        AttributeError: Se ``seq`` não for string e não tiver o método ``upper()``.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; validar_proteina(&quot;ACDEFGHIKLMNPQRSTVWY&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; validar_proteina(&quot;ACDXYZ&quot;)</span>
+<span class="sd">        False</span>
+<span class="sd">        &gt;&gt;&gt; validar_proteina(&quot;&quot;)</span>
+<span class="sd">        False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">seq</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -118,9 +178,26 @@
 <div class="viewcode-block" id="transcricao">
 <a class="viewcode-back" href="../../modules.html#bioinf.sequencias.transcricao">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">transcricao</span><span class="p">(</span><span class="n">dna_seq</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Transcreve uma sequência de DNA para RNA (T → U).</span>
-<span class="sd">    Retorna a sequência de RNA correspondente, ou string vazia se não for DNA válido.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transcreve DNA para RNA substituindo ``T`` por ``U``.</span>
+
+<span class="sd">    Se a sequência de entrada não for DNA válido (ver :func:`validar_dna`),</span>
+<span class="sd">    devolve string vazia ``&quot;&quot;`` em vez de levantar exceção.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dna_seq (str): Sequência de DNA.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Sequência de RNA resultante (em maiúsculas), ou ``&quot;&quot;`` se a entrada</span>
+<span class="sd">        não for DNA válido.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        AttributeError: Se ``dna_seq`` não for string e não tiver ``upper()``.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; transcricao(&quot;ATGC&quot;)</span>
+<span class="sd">        &#39;AUGC&#39;</span>
+<span class="sd">        &gt;&gt;&gt; transcricao(&quot;AUGC&quot;)</span>
+<span class="sd">        &#39;&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">validar_dna</span><span class="p">(</span><span class="n">dna_seq</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
@@ -131,9 +208,29 @@
 <div class="viewcode-block" id="complemento">
 <a class="viewcode-back" href="../../modules.html#bioinf.sequencias.complemento">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">complemento</span><span class="p">(</span><span class="n">dna_seq</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Retorna o complemento de uma sequência de DNA.</span>
-<span class="sd">    Retorna string vazia se não for DNA válido.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calcula o complemento de uma sequência de DNA.</span>
+
+<span class="sd">    Usa o emparelhamento complementar:</span>
+<span class="sd">    - A ↔ T</span>
+<span class="sd">    - C ↔ G</span>
+
+<span class="sd">    Se a sequência de entrada não for DNA válido (ver :func:`validar_dna`),</span>
+<span class="sd">    devolve ``&quot;&quot;``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dna_seq (str): Sequência de DNA.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Complemento (em maiúsculas), ou ``&quot;&quot;`` se a entrada não for DNA válido.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        AttributeError: Se ``dna_seq`` não for string e não tiver ``upper()``.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; complemento(&quot;ATGC&quot;)</span>
+<span class="sd">        &#39;TACG&#39;</span>
+<span class="sd">        &gt;&gt;&gt; complemento(&quot;AUGC&quot;)</span>
+<span class="sd">        &#39;&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">validar_dna</span><span class="p">(</span><span class="n">dna_seq</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
@@ -149,9 +246,21 @@
 <div class="viewcode-block" id="reverso">
 <a class="viewcode-back" href="../../modules.html#bioinf.sequencias.reverso">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">reverso</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Retorna a sequência invertida.</span>
-<span class="sd">    Retorna string vazia se a sequência estiver vazia.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Devolve a sequência invertida (reverse).</span>
+
+<span class="sd">    Se a sequência de entrada for vazia (``&quot;&quot;``/``None``/falsy), devolve ``&quot;&quot;``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seq (str): Sequência a inverter.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Sequência invertida, ou ``&quot;&quot;`` se a entrada for vazia.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; reverso(&quot;ATGC&quot;)</span>
+<span class="sd">        &#39;CGTA&#39;</span>
+<span class="sd">        &gt;&gt;&gt; reverso(&quot;&quot;)</span>
+<span class="sd">        &#39;&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">seq</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
@@ -162,9 +271,26 @@
 <div class="viewcode-block" id="complemento_inverso">
 <a class="viewcode-back" href="../../modules.html#bioinf.sequencias.complemento_inverso">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">complemento_inverso</span><span class="p">(</span><span class="n">dna_seq</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Retorna o complemento reverso de uma sequência de DNA (5&#39; → 3&#39;).</span>
-<span class="sd">    Retorna string vazia se não for DNA válido.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calcula o complemento inverso (reverse-complement) de uma sequência de DNA.</span>
+
+<span class="sd">    Produz o complemento e inverte a orientação, equivalente ao complemento reverso</span>
+<span class="sd">    usado frequentemente em bioinformática para obter a cadeia complementar no sentido</span>
+<span class="sd">    5&#39;→3&#39;. Se a sequência de entrada não for DNA válido, devolve ``&quot;&quot;``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dna_seq (str): Sequência de DNA.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Complemento inverso (em maiúsculas), ou ``&quot;&quot;`` se a entrada não for DNA válido.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        AttributeError: Se ``dna_seq`` não for string e não tiver ``upper()``.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; complemento_inverso(&quot;ATGC&quot;)</span>
+<span class="sd">        &#39;GCAT&#39;</span>
+<span class="sd">        &gt;&gt;&gt; complemento_inverso(&quot;AUGC&quot;)</span>
+<span class="sd">        &#39;&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">validar_dna</span><span class="p">(</span><span class="n">dna_seq</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
