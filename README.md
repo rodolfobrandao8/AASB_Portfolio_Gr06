@@ -13,6 +13,7 @@ Este portefólio inclui implementações dos seguintes tópicos:
 - Validação de sequências (DNA, RNA e proteínas)
 - Complemento e reverso-complemento
 - Transcrição DNA → RNA
+- Identificação de Orfs
 
 ### 2. Alinhamento de Sequências
 - Matrizes de substituição (PAM / BLOSUM)
