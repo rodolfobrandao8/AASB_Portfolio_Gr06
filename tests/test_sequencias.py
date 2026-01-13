@@ -67,5 +67,20 @@ class TestSequenciasTamanho1(unittest.TestCase):
         self.assertEqual(sequencias.reverso("G"), "G")
         self.assertEqual(sequencias.complemento_inverso("C"), "G")
 
+class TestGetORFs(unittest.TestCase): 
+
+    def test_get_orfs(self):
+        casos = [
+            ("ATGAAATAG", ["ATGAAATAG"]),             
+            ("AAACCCGGG", []),                       
+            ("ATGAAATAGATGCCCTAA", ["ATGAAATAG", "ATGCCCTAA"])  
+        ]
+
+        for dna, esperado in casos:
+            self.assertEqual(get_orfs(dna), esperado)
+
+if __name__ == "__main__":
+    unittest.main(argv=['first-arg-is-ignored'], exit=False)
+
 if __name__ == "__main__":
     unittest.main()
