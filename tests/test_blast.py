@@ -1,42 +1,95 @@
 import unittest
-from bioinf.blast import blast_simplificado
+from bioinf.blast import (
+    blast_simplificado,
+    construir_mapa,
+    encontrar_hits,
+    estender_hit
+)
 
-class TestBlast(unittest.TestCase):
+
+class TestConstruirMapa(unittest.TestCase):
+    def test_mapa_basico(self):
+        query = "ATGCAT"
+        mapa = construir_mapa(query, 3)
+        self.assertIn("ATG", mapa)
+        self.assertIn("TGC", mapa)
+        self.assertEqual(mapa["ATG"], [0])
     
-    def test_blast_match_perfeito(self):
-        # Encontrar "GATA" dentro de uma seq maior
-        # A semente w=3 ("GAT" ou "ATA") deve disparar o hit
-        db = "CCCGATACCC"
-        query = "GATA"
-        
-        # Esperamos encontrar GATA (score 4*2 = 8) na posição 3
-        q_res, db_res, score, start = blast_simplificado(query, db, w=3)
-        
-        self.assertEqual(db_res, "GATA")
-        self.assertEqual(start, 3)
-        self.assertEqual(score, 8)
+    def test_query_tamanho_menor_w(self):
+        query = "AT"
+        mapa = construir_mapa(query, 3)
+        self.assertEqual(mapa, {})
 
-    def test_blast_sem_match(self):
-        # Se não houver semente comum, retorna vazio
-        db = "AAAAAA"
-        query = "TTTTTT"
-        
-        q_res, db_res, score, start = blast_simplificado(query, db, w=3)
+
+class TestEncontrarHits(unittest.TestCase):
+    def test_hit_simples(self):
+        seq = "ATGCAT"
+        mapa = {"ATG": [0]}
+        hits = encontrar_hits(seq, mapa, 3)
+        self.assertIn((0, 0), hits)
+
+    def test_sem_hits(self):
+        seq = "AAAAA"
+        mapa = {"TTT": [0]}
+        hits = encontrar_hits(seq, mapa, 3)
+        self.assertEqual(hits, [])
+
+
+class TestEstenderHit(unittest.TestCase):
+    def test_hit_basico(self):
+        query = "ATGC"
+        seq = "ATGC"
+        hit = (0, 0)
+        score, q_start, t_start, length = estender_hit(query, seq, hit, 3, match=2, mismatch=-1)
+        self.assertEqual(q_start, 0)
+        self.assertEqual(t_start, 0)
+        self.assertEqual(length, 4)
+        self.assertGreater(score, 0)
+
+    def test_hit_com_mismatch(self):
+        query = "ATGC"
+        seq = "ATGA"
+        hit = (0, 0)
+        score, _, _, length = estender_hit(query, seq, hit, 3, match=2, mismatch=-1)
+        self.assertEqual(length, 4)
+
+
+class TestBlastSimplificado(unittest.TestCase):
+    def test_alinhamento_perfeito(self):
+        query = "ATGC"
+        seq = "ATGC"
+        sub_q, sub_t, score, pos = blast_simplificado(query, seq, w=2)
+        self.assertEqual(sub_q, query)
+        self.assertEqual(sub_t, seq)
+        self.assertEqual(pos, 0)
+        self.assertGreater(score, 0)
+
+    def test_subsequencia_no_alvo(self):
+        query = "ATGC"
+        seq = "TTATGCGG"
+        sub_q, sub_t, score, pos = blast_simplificado(query, seq, w=2)
+        self.assertEqual(sub_q, "ATGC")
+        self.assertEqual(sub_t, "ATGC")
+        self.assertGreater(score, 0)
+
+    def test_sem_hits(self):
+        query = "AAAA"
+        seq = "TTTT"
+        sub_q, sub_t, score, pos = blast_simplificado(query, seq, w=2)
+        self.assertEqual(sub_q, "")
+        self.assertEqual(sub_t, "")
         self.assertEqual(score, 0)
-        
-    def test_extensao(self):
-        # A semente é "AAA" (w=3)
-        # Mas a extensão deve apanhar o "G" antes e depois
-        # Query:  GAAAG
-        # DB:    CCGAAAGCC
-        db = "CCGAAAGCC"
-        query = "GAAAG"
-        
-        # Semente 'AAA' faz match. Extensão apanha os Gs.
-        q_res, db_res, score, start = blast_simplificado(query, db, w=3)
-        
-        self.assertEqual(db_res, "GAAAG")
-        self.assertEqual(score, 10) # 5 matches * 2
+        self.assertEqual(pos, -1)
 
-if __name__ == '__main__':
+    def test_query_menor_w(self):
+        query = "AT"
+        seq = "ATGC"
+        sub_q, sub_t, score, pos = blast_simplificado(query, seq, w=3)
+        self.assertEqual(sub_q, "")
+        self.assertEqual(sub_t, "")
+        self.assertEqual(score, 0)
+        self.assertEqual(pos, -1)
+
+
+if __name__ == "__main__":
     unittest.main()

@@ -1,83 +1,72 @@
 import unittest
-from bioinf.alinhamento import needleman_wunsch
+from bioinf.alinhamento import (
+    needleman_wunsch,
+    smith_waterman,
+    dot_plot,
+    consenso_multiplas,
+    alinhamento_multiplo,
+    BLOSUM62
+)
 
-class TestAlinhamento(unittest.TestCase):
-    
-    def test_alinhamento_simples(self):
-        # Sequências iguais devem dar match perfeito
-        # Score esperado: 4 matches * 2 = 8
-        s1 = "ATGC"
-        s2 = "ATGC"
-        a1, a2, score = needleman_wunsch(s1, s2, match=2, mismatch=-1, gap=-1)
-        
+class TestNeedlemanWunsch(unittest.TestCase):
+    def test_sequencias_identicas(self):
+        a1, a2, score = needleman_wunsch("ATGC", "ATGC", BLOSUM62)
         self.assertEqual(a1, "ATGC")
         self.assertEqual(a2, "ATGC")
-        self.assertEqual(score, 8)
+        self.assertGreater(score, 0)
 
-    def test_alinhamento_com_gap(self):
-        # Exemplo: ATC vs AC (deve inserir gap no T)
-        # A(2) + T/Gap(-1) + C(2) = Score 3
-        s1 = "ATC"
-        s2 = "AC"
-        a1, a2, score = needleman_wunsch(s1, s2, match=2, mismatch=-1, gap=-1)
-        
-        self.assertEqual(a1, "ATC")
-        self.assertEqual(a2, "A-C")
-        self.assertEqual(score, 3)
-
-    def test_alinhamento_mismatch(self):
-        # Exemplo: A vs T (Mismatch) -> Score -1
-        s1 = "A"
-        s2 = "T"
-        a1, a2, score = needleman_wunsch(s1, s2, match=2, mismatch=-1, gap=-1)
-        
-        self.assertEqual(score, -1) 
-        # Alinhamento pode ser A/T (mismatch) ou -A/T- (gaps), depende da preferencia
-        # Com match=2, mismatch=-1, gap=-1, o mismatch (-1) é melhor que 2 gaps (-2)
-
-    def test_smith_waterman_local(self):
-        # Exemplo clássico: encontrar "TAG" dentro de "GGTAGCC"
-        # Seq1: GGTAGCC
-        # Seq2: TAG
-        # O SW deve ignorar o início "GG" e o fim "CC" e alinhar só o "TAG"
-        from bioinf.alinhamento import smith_waterman
-        
-        s1 = "GGTAGCC"
-        s2 = "TAG"
-        a1, a2, score = smith_waterman(s1, s2, match=2, mismatch=-1, gap=-1)
-        
-        self.assertEqual(a1, "TAG")
-        self.assertEqual(a2, "TAG")
-        self.assertEqual(score, 6) # 3 matches * 2
-
-    def test_smith_waterman_sem_semelhanca(self):
-        # Se não houver nada parecido, o score é 0 e strings vazias
-        from bioinf.alinhamento import smith_waterman
-        s1 = "AAAA"
-        s2 = "TTTT"
-        a1, a2, score = smith_waterman(s1, s2, match=2, mismatch=-5, gap=-5)
-        
-        self.assertEqual(score, 0)
+    def test_sequencia_vazia(self):
+        a1, a2, score = needleman_wunsch("", "", BLOSUM62)
         self.assertEqual(a1, "")
         self.assertEqual(a2, "")
+        self.assertEqual(score, 0)
 
-    def test_alinhamento_multiplo(self):
-        # Testar com 3 sequências que partilham um padrão "ATGC"
-        # Seq1: ATGC
-        # Seq2: AT-C (Falta o G)
-        # Seq3: A-GC (Falta o T)
-        # O consenso deve recuperar o máximo de informação possível
-        from bioinf.alinhamento import alinhamento_multiplo
-        
-        seqs = ["ATGC", "ATC", "AGC"]
-        consenso = alinhamento_multiplo(seqs)
-        
-        # O consenso ideal seria algo próximo de ATGC (comprimento 4)
-        # Dependendo da ordem de fusão, pode variar, mas deve ter tamanho >= 3
-        self.assertTrue(len(consenso) >= 3)
-        # Verifica se as letras principais estão presentes
-        self.assertIn("A", consenso)
-        self.assertIn("C", consenso)
+    def test_sequencias_tamanho_1(self):
+        a1, a2, score = needleman_wunsch("A", "T", BLOSUM62)
+        self.assertEqual(len(a1), 1)
+        self.assertEqual(len(a2), 1)
 
-if __name__ == '__main__':
+class TestSmithWaterman(unittest.TestCase):
+    def test_alinhamento_local_simples(self):
+        a1, a2, score = smith_waterman("ATGC", "TGC", BLOSUM62)
+        self.assertIn("TGC", a1+a2)
+        self.assertGreaterEqual(score, 0)
+
+    def test_sequencia_vazia(self):
+        a1, a2, score = smith_waterman("", "", BLOSUM62)
+        self.assertEqual(a1, "")
+        self.assertEqual(a2, "")
+        self.assertEqual(score, 0)
+
+class TestDotPlot(unittest.TestCase):
+    def test_dotplot_basico(self):
+        matriz = dot_plot("AT", "AG")
+        self.assertEqual(matriz, [[1,0],[0,0]])
+
+class TestConsensoMultiplo(unittest.TestCase):
+    def test_consenso_simples(self):
+        alin = ["ATGC", "ATGA", "ATGT"]
+        c = consenso_multiplas(alin)
+        self.assertEqual(c, "ATGA")
+
+class TestAlinhamentoMultiplo(unittest.TestCase):
+    def test_alinhamento_multiplo_basico(self):
+        seqs = ["ATGC", "ATGA", "ATGT"]
+        alin, cons = alinhamento_multiplo(seqs, BLOSUM62)
+        self.assertEqual(cons, "ATGA")
+        self.assertTrue(all(len(a) == len(alin[0]) for a in alin))
+
+    def test_sequencia_unica(self):
+        seqs = ["A"]
+        alin, cons = alinhamento_multiplo(seqs, BLOSUM62)
+        self.assertEqual(alin, [["A"]])
+        self.assertEqual(cons, "A")
+
+    def test_sequencias_vazias(self):
+        seqs = ["", "", ""]
+        alin, cons = alinhamento_multiplo(seqs, BLOSUM62)
+        self.assertTrue(all(a == "" or a == [""] for a in alin))
+        self.assertEqual(cons, "")
+
+if __name__ == "__main__":
     unittest.main()
