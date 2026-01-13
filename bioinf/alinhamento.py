@@ -285,7 +285,7 @@ def consenso_multiplas(alinhamento):
     for col in zip(*alinhamento):
         freq = {c: col.count(c) for c in set(col)}
         max_freq = max(freq.values())
-        # escolhe o primeiro carácter na coluna com frequência máxima
+        
         for c in col:
             if freq[c] == max_freq:
                 consenso += c
@@ -297,7 +297,7 @@ def alinhamento_multiplo(seqs, matriz_subst=BLOSUM62, gap=-5):
     """Realiza um alinhamento múltiplo “progressivo” simplificado.
 
     Estratégia implementada:
-        - Inicializa cada sequência como um alinhamento “unitário”.
+        - Inicia cada sequência como um alinhamento “unitário”.
         - Repetidamente, escolhe o par com melhor score de Needleman–Wunsch
           (aplicado às strings representativas atuais) e junta-o num alinhamento
           de 2 sequências.
@@ -344,7 +344,7 @@ def alinhamento_multiplo(seqs, matriz_subst=BLOSUM62, gap=-5):
                     melhor_alin = (a1, a2)
 
         i, j = melhor_par
-        # combinar os alinhamentos existentes na lista
+    
         combinacao = [melhor_alin[0], melhor_alin[1]]
         alinhamentos.pop(j)
         alinhamentos.pop(i)
