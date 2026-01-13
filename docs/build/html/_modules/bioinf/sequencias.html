@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>bioinf.sequencias &mdash; AASB Portfolio 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
@@ -72,41 +72,107 @@
 <div class="viewcode-block" id="validar_dna">
 <a class="viewcode-back" href="../../modules.html#bioinf.sequencias.validar_dna">[docs]</a>
 <span></span><span class="k">def</span><span class="w"> </span><span class="nf">validar_dna</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">seq</span><span class="p">:</span>  <span class="c1"># Se a string estiver vazia</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Valida se uma sequência contém apenas nucleótidos de DNA (A, C, G, T).</span>
+<span class="sd">    Retorna True se válido, False caso contrário.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">seq</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
-        
     <span class="n">seq</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-    <span class="n">validos</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">}</span>
-    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">validos</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">})</span></div>
+
+
+
+<div class="viewcode-block" id="validar_rna">
+<a class="viewcode-back" href="../../modules.html#bioinf.sequencias.validar_rna">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">validar_rna</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Valida se uma sequência contém apenas nucleótidos de RNA (A, C, G, U).</span>
+<span class="sd">    Retorna True se válido, False caso contrário.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">seq</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">seq</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">})</span></div>
+
+
+
+<div class="viewcode-block" id="validar_proteina">
+<a class="viewcode-back" href="../../modules.html#bioinf.sequencias.validar_proteina">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">validar_proteina</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Valida se uma sequência contém apenas aminoácidos válidos (20 aminoácidos padrão).</span>
+<span class="sd">    Retorna True se válido, False caso contrário.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">seq</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">seq</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="n">aminoacidos</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;D&#39;</span><span class="p">,</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="s1">&#39;F&#39;</span><span class="p">,</span><span class="s1">&#39;G&#39;</span><span class="p">,</span><span class="s1">&#39;H&#39;</span><span class="p">,</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="s1">&#39;K&#39;</span><span class="p">,</span><span class="s1">&#39;L&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;M&#39;</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="s1">&#39;Q&#39;</span><span class="p">,</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="s1">&#39;S&#39;</span><span class="p">,</span><span class="s1">&#39;T&#39;</span><span class="p">,</span><span class="s1">&#39;V&#39;</span><span class="p">,</span><span class="s1">&#39;W&#39;</span><span class="p">,</span><span class="s1">&#39;Y&#39;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">aminoacidos</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="transcricao">
 <a class="viewcode-back" href="../../modules.html#bioinf.sequencias.transcricao">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">transcricao</span><span class="p">(</span><span class="n">dna_seq</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">dna_seq</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transcreve uma sequência de DNA para RNA (T → U).</span>
+<span class="sd">    Retorna a sequência de RNA correspondente, ou string vazia se não for DNA válido.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">validar_dna</span><span class="p">(</span><span class="n">dna_seq</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
-    
-    <span class="c1"># Simplesmente troca T por U e garante maiúsculas</span>
     <span class="k">return</span> <span class="n">dna_seq</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="complemento">
+<a class="viewcode-back" href="../../modules.html#bioinf.sequencias.complemento">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">complemento</span><span class="p">(</span><span class="n">dna_seq</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retorna o complemento de uma sequência de DNA.</span>
+<span class="sd">    Retorna string vazia se não for DNA válido.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">validar_dna</span><span class="p">(</span><span class="n">dna_seq</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        
+    <span class="n">mapa</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">}</span>
+    <span class="n">complemento</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">dna_seq</span><span class="o">.</span><span class="n">upper</span><span class="p">():</span>
+        <span class="n">complemento</span> <span class="o">+=</span> <span class="n">mapa</span><span class="p">[</span><span class="n">base</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">complemento</span></div>
+
+
+
+<div class="viewcode-block" id="reverso">
+<a class="viewcode-back" href="../../modules.html#bioinf.sequencias.reverso">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">reverso</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retorna a sequência invertida.</span>
+<span class="sd">    Retorna string vazia se a sequência estiver vazia.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">seq</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">seq</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
 
 
 <div class="viewcode-block" id="complemento_inverso">
 <a class="viewcode-back" href="../../modules.html#bioinf.sequencias.complemento_inverso">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">complemento_inverso</span><span class="p">(</span><span class="n">dna_seq</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">dna_seq</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retorna o complemento reverso de uma sequência de DNA (5&#39; → 3&#39;).</span>
+<span class="sd">    Retorna string vazia se não for DNA válido.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">validar_dna</span><span class="p">(</span><span class="n">dna_seq</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
         
-    <span class="n">dna_seq</span> <span class="o">=</span> <span class="n">dna_seq</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-    <span class="c1"># Dicionário de complementos</span>
     <span class="n">mapa</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">}</span>
-    
-    <span class="c1"># 1. Calcular o complemento (base a base)</span>
     <span class="n">complemento</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">dna_seq</span><span class="p">:</span>
-        <span class="c1"># Se a base não estiver no mapa (ex: N), mantém a original ou ignora</span>
-        <span class="n">complemento</span> <span class="o">+=</span> <span class="n">mapa</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">base</span><span class="p">)</span>
-        
-    <span class="c1"># 2. Inverter a string (slice [::-1] é o truque do Python para inverter)</span>
+    <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">dna_seq</span><span class="o">.</span><span class="n">upper</span><span class="p">():</span>
+        <span class="n">complemento</span> <span class="o">+=</span> <span class="n">mapa</span><span class="p">[</span><span class="n">base</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">complemento</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 </pre></div>

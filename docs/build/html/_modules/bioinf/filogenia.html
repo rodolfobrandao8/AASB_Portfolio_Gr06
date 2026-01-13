@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>bioinf.filogenia &mdash; AASB Portfolio 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
@@ -72,75 +72,87 @@
 <div class="viewcode-block" id="distancia_levenshtein">
 <a class="viewcode-back" href="../../modules.html#bioinf.filogenia.distancia_levenshtein">[docs]</a>
 <span></span><span class="k">def</span><span class="w"> </span><span class="nf">distancia_levenshtein</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calcula a distância de edição entre duas strings.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">seq1</span> <span class="o">==</span> <span class="n">seq2</span><span class="p">:</span> <span class="k">return</span> <span class="mi">0</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calcula a distância de edição (Levenshtein) entre duas strings.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="n">cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">matriz</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">)]</span>
-    
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cols</span><span class="p">):</span> <span class="n">matriz</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span>
-            
+    <span class="n">matriz</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">cols</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">)]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+        <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+        <span class="n">matriz</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span>
+
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cols</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-                <span class="n">cost</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">cost</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">cost</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">matriz</span><span class="p">[</span><span class="n">rows</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">cols</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+            <span class="n">cost</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="mi">1</span>
+            <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">cost</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">matriz</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="upgma_simples">
-<a class="viewcode-back" href="../../modules.html#bioinf.filogenia.upgma_simples">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">upgma_simples</span><span class="p">(</span><span class="n">lista_seqs</span><span class="p">):</span>
-    <span class="c1"># Copiar a lista para não estragar a original</span>
-    <span class="n">clusters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">lista_seqs</span><span class="p">)</span>
-    
+
+<div class="viewcode-block" id="matriz_distancias">
+<a class="viewcode-back" href="../../modules.html#bioinf.filogenia.matriz_distancias">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">matriz_distancias</span><span class="p">(</span><span class="n">seqs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constrói a matriz de distâncias par-a-par entre sequências.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">matriz</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seqs</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqs</span><span class="p">)):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">distancia_levenshtein</span><span class="p">(</span><span class="n">seqs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">seqs</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="n">matriz</span><span class="p">[(</span><span class="n">seqs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">seqs</span><span class="p">[</span><span class="n">j</span><span class="p">])]</span> <span class="o">=</span> <span class="n">d</span>
+            <span class="n">matriz</span><span class="p">[(</span><span class="n">seqs</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">seqs</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span> <span class="o">=</span> <span class="n">d</span>
+    <span class="k">return</span> <span class="n">matriz</span></div>
+
+
+
+<div class="viewcode-block" id="upgma">
+<a class="viewcode-back" href="../../modules.html#bioinf.filogenia.upgma">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">upgma</span><span class="p">(</span><span class="n">seqs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constrói uma árvore filogenética simplificada usando UPGMA.</span>
+<span class="sd">    A distância entre clusters é a média das distâncias entre as sequências.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">clusters</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">seqs</span><span class="p">}</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">matriz_distancias</span><span class="p">(</span><span class="n">seqs</span><span class="p">)</span>
+
     <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">clusters</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">melhor_dist</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
-        <span class="n">melhor_par</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        
-        <span class="c1"># Comparar todos contra todos para achar o par mais próximo</span>
-        <span class="c1"># Nota: Isto recalcula distâncias a cada passo (menos eficiente, mas mais fácil de ler/implementar)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">clusters</span><span class="p">)):</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">clusters</span><span class="p">)):</span>
-                
-                <span class="c1"># Se for tuplo, temos de &quot;imaginar&quot; uma string representativa ou usar média</span>
-                <span class="c1"># Simplificação: Usamos a representação string para calcular distância</span>
-                <span class="c1"># (Isto não é o UPGMA matemático perfeito das médias, mas serve para gerar a topologia)</span>
-                <span class="n">s1</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">clusters</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clusters</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">clusters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">s2</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">clusters</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clusters</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">clusters</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-                
-                <span class="c1"># Se forem tuplos, extrair apenas uma string &quot;amostra&quot; para comparar</span>
-                <span class="c1"># (Truque para o código não crashar)</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clusters</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span> <span class="n">s1</span> <span class="o">=</span> <span class="n">_extrair_seq</span><span class="p">(</span><span class="n">clusters</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clusters</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">_extrair_seq</span><span class="p">(</span><span class="n">clusters</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-                
-                <span class="n">d</span> <span class="o">=</span> <span class="n">distancia_levenshtein</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span>
-                
-                <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">melhor_dist</span><span class="p">:</span>
-                    <span class="n">melhor_dist</span> <span class="o">=</span> <span class="n">d</span>
-                    <span class="n">melhor_par</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
-        
-        <span class="c1"># Agrupar</span>
-        <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">melhor_par</span>
-        <span class="n">novo_cluster</span> <span class="o">=</span> <span class="p">(</span><span class="n">clusters</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">clusters</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-        
-        <span class="c1"># Remover (do maior para o menor índice)</span>
-        <span class="n">clusters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
-        <span class="n">clusters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
-        
-        <span class="c1"># Adicionar novo</span>
-        <span class="n">clusters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">novo_cluster</span><span class="p">)</span>
-        
-    <span class="k">return</span> <span class="n">clusters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+        <span class="n">menor_dist</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+        <span class="n">par</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">clusters</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_extrair_seq</span><span class="p">(</span><span class="n">cluster</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Função auxiliar para tirar uma string de dentro de tuplos aninhados.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span> <span class="k">return</span> <span class="n">cluster</span>
-    <span class="k">return</span> <span class="n">_extrair_seq</span><span class="p">(</span><span class="n">cluster</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># Vai sempre pela esquerda</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)):</span>
+                <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">keys</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+                <span class="n">dists</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">dist</span><span class="p">[(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">)]</span>
+                    <span class="k">for</span> <span class="n">s1</span> <span class="ow">in</span> <span class="n">clusters</span><span class="p">[</span><span class="n">c1</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">s2</span> <span class="ow">in</span> <span class="n">clusters</span><span class="p">[</span><span class="n">c2</span><span class="p">]</span>
+                <span class="p">]</span>
+                <span class="n">media</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">dists</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">dists</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">media</span> <span class="o">&lt;</span> <span class="n">menor_dist</span><span class="p">:</span>
+                    <span class="n">menor_dist</span> <span class="o">=</span> <span class="n">media</span>
+                    <span class="n">par</span> <span class="o">=</span> <span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">)</span>
+
+        <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">par</span>
+        <span class="n">novo_cluster</span> <span class="o">=</span> <span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">)</span>
+
+        <span class="n">clusters</span><span class="p">[</span><span class="n">novo_cluster</span><span class="p">]</span> <span class="o">=</span> <span class="n">clusters</span><span class="p">[</span><span class="n">c1</span><span class="p">]</span> <span class="o">+</span> <span class="n">clusters</span><span class="p">[</span><span class="n">c2</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">clusters</span><span class="p">[</span><span class="n">c1</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">clusters</span><span class="p">[</span><span class="n">c2</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">clusters</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span></div>
+
 </pre></div>
 
            </div>

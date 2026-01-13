@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>bioinf.alinhamento &mdash; AASB Portfolio 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
@@ -69,248 +69,162 @@
            <div itemprop="articleBody">
              
   <h1>Source code for bioinf.alinhamento</h1><div class="highlight"><pre>
+<span></span><span class="n">BLOSUM62</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+    <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>  <span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span>
+    <span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>  <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">},</span>
+    <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="score_subst">
+<a class="viewcode-back" href="../../modules.html#bioinf.alinhamento.score_subst">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">score_subst</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">matriz</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retorna o score de substituição entre dois caracteres.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">matriz</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="dot_plot">
+<a class="viewcode-back" href="../../modules.html#bioinf.alinhamento.dot_plot">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dot_plot</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cria matriz de pontos (1 = match, 0 = mismatch).&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="mi">1</span> <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">seq2</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">seq1</span><span class="p">]</span></div>
+
+
+
 <div class="viewcode-block" id="needleman_wunsch">
 <a class="viewcode-back" href="../../modules.html#bioinf.alinhamento.needleman_wunsch">[docs]</a>
-<span></span><span class="k">def</span><span class="w"> </span><span class="nf">needleman_wunsch</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">match</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mismatch</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">gap</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">needleman_wunsch</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">matriz_subst</span><span class="o">=</span><span class="n">BLOSUM62</span><span class="p">,</span> <span class="n">gap</span><span class="o">=-</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Alinhamento global (Needleman-Wunsch).&quot;&quot;&quot;</span>
+    <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">cols</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">)]</span>
 
-    <span class="c1"># 1. Calcular a matriz de scores</span>
-    <span class="n">matriz</span> <span class="o">=</span> <span class="n">_criar_matriz_pontuacao</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">match</span><span class="p">,</span> <span class="n">mismatch</span><span class="p">,</span> <span class="n">gap</span><span class="p">)</span>
-    
-    <span class="c1"># 2. Obter o score final (canto inferior direito)</span>
-    <span class="n">score</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)][</span><span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)]</span>
-    
-    <span class="c1"># 3. Reconstruir o alinhamento (Traceback)</span>
-    <span class="n">alin1</span><span class="p">,</span> <span class="n">alin2</span> <span class="o">=</span> <span class="n">_traceback</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">matriz</span><span class="p">,</span> <span class="n">match</span><span class="p">,</span> <span class="n">mismatch</span><span class="p">,</span> <span class="n">gap</span><span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">alin1</span><span class="p">,</span> <span class="n">alin2</span><span class="p">,</span> <span class="n">score</span></div>
-
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_criar_matriz_pontuacao</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">match</span><span class="p">,</span> <span class="n">mismatch</span><span class="p">,</span> <span class="n">gap</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Função auxiliar para preencher a matriz de programação dinâmica.&quot;&quot;&quot;</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-    
-    <span class="c1"># Criar matriz preenchida com zeros</span>
-    <span class="n">matriz</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">)]</span>
-    
-    <span class="c1"># Inicializar primeira linha e coluna com gaps acumulados</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
-        <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span>
+        <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cols</span><span class="p">):</span>
-        <span class="n">matriz</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span>
-        
-    <span class="c1"># Preencher o resto da matriz</span>
+        <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span>
+
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cols</span><span class="p">):</span>
-            <span class="c1"># Calcular pontuação diagonal (Match ou Mismatch?)</span>
-            <span class="k">if</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-                <span class="n">score_diagonal</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">match</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">score_diagonal</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">mismatch</span>
-                
-            <span class="c1"># Calcular pontuação vinda de cima (Gap na seq2)</span>
-            <span class="n">score_cima</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span>
-            
-            <span class="c1"># Calcular pontuação vinda da esquerda (Gap na seq1)</span>
-            <span class="n">score_esquerda</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span>
-            
-            <span class="c1"># Escolher o máximo</span>
-            <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">score_diagonal</span><span class="p">,</span> <span class="n">score_cima</span><span class="p">,</span> <span class="n">score_esquerda</span><span class="p">)</span>
-            
-    <span class="k">return</span> <span class="n">matriz</span>
+            <span class="n">diag</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">score_subst</span><span class="p">(</span><span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">matriz_subst</span><span class="p">)</span>
+            <span class="n">cima</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span>
+            <span class="n">esq</span>  <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span>
+            <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">diag</span><span class="p">,</span> <span class="n">cima</span><span class="p">,</span> <span class="n">esq</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_traceback_nw</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">matriz_subst</span><span class="p">,</span> <span class="n">gap</span><span class="p">)</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_traceback</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">matriz</span><span class="p">,</span> <span class="n">match</span><span class="p">,</span> <span class="n">mismatch</span><span class="p">,</span> <span class="n">gap</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Função auxiliar para reconstruir o caminho ótimo (do fim para o início).&quot;&quot;&quot;</span>
-    <span class="n">alin1</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">alin2</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    
-    <span class="c1"># Começar no canto inferior direito</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)</span>
-    <span class="n">j</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)</span>
-    
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_traceback_nw</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">matriz_subst</span><span class="p">,</span> <span class="n">gap</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reconstrói alinhamento global a partir da matriz de scores.&quot;&quot;&quot;</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)</span>
+    <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+
     <span class="k">while</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">score_atual</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-        
-        <span class="c1"># Verificar se veio da Diagonal (Match/Mismatch)</span>
-        <span class="c1"># Nota: i&gt;0 e j&gt;0 garante que não estamos na borda</span>
-        <span class="n">score_diag</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="o">-</span><span class="mi">99999</span>
-        <span class="n">match_score</span> <span class="o">=</span> <span class="n">match</span> <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">else</span> <span class="n">mismatch</span>
-        
-        <span class="c1"># Verificar se veio de Cima ou Esquerda</span>
-        <span class="n">score_cima</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">99999</span>
-        <span class="n">score_esq</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">99999</span>
-        
-        <span class="c1"># Lógica de prioridade: Diagonal &gt; Cima &gt; Esquerda (podes ajustar)</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">score_atual</span> <span class="o">==</span> <span class="n">score_diag</span> <span class="o">+</span> <span class="n">match_score</span><span class="p">:</span>
-            <span class="n">alin1</span> <span class="o">+=</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">alin2</span> <span class="o">+=</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">score_subst</span><span class="p">(</span><span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">matriz_subst</span><span class="p">):</span>
+            <span class="n">a1</span> <span class="o">+=</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">a2</span> <span class="o">+=</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
             <span class="n">j</span> <span class="o">-=</span> <span class="mi">1</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">score_atual</span> <span class="o">==</span> <span class="n">score_cima</span> <span class="o">+</span> <span class="n">gap</span><span class="p">:</span>
-            <span class="n">alin1</span> <span class="o">+=</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">alin2</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span><span class="p">:</span>
+            <span class="n">a1</span> <span class="o">+=</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">a2</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span>
             <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span> <span class="c1"># Veio da esquerda</span>
-            <span class="n">alin1</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span>
-            <span class="n">alin2</span> <span class="o">+=</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">a1</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span>
+            <span class="n">a2</span> <span class="o">+=</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">j</span> <span class="o">-=</span> <span class="mi">1</span>
-            
-    <span class="c1"># Inverter as strings porque construímos do fim para o início</span>
-    <span class="k">return</span> <span class="n">alin1</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">alin2</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">a1</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">a2</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)][</span><span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)]</span>
+
 
 <div class="viewcode-block" id="smith_waterman">
 <a class="viewcode-back" href="../../modules.html#bioinf.alinhamento.smith_waterman">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">smith_waterman</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">match</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mismatch</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">gap</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-   
-    <span class="c1"># 1. Calcular a matriz (com a regra dos zeros)</span>
-    <span class="n">matriz</span><span class="p">,</span> <span class="n">max_i</span><span class="p">,</span> <span class="n">max_j</span> <span class="o">=</span> <span class="n">_criar_matriz_sw</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">match</span><span class="p">,</span> <span class="n">mismatch</span><span class="p">,</span> <span class="n">gap</span><span class="p">)</span>
-    
-    <span class="c1"># 2. O score final é o valor máximo encontrado na matriz inteira</span>
-    <span class="n">score</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">max_i</span><span class="p">][</span><span class="n">max_j</span><span class="p">]</span>
-    
-    <span class="c1"># 3. Reconstruir o alinhamento a partir desse máximo</span>
-    <span class="n">alin1</span><span class="p">,</span> <span class="n">alin2</span> <span class="o">=</span> <span class="n">_traceback_sw</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">matriz</span><span class="p">,</span> <span class="n">max_i</span><span class="p">,</span> <span class="n">max_j</span><span class="p">,</span> <span class="n">match</span><span class="p">,</span> <span class="n">mismatch</span><span class="p">,</span> <span class="n">gap</span><span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">alin1</span><span class="p">,</span> <span class="n">alin2</span><span class="p">,</span> <span class="n">score</span></div>
+<span class="k">def</span><span class="w"> </span><span class="nf">smith_waterman</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">matriz_subst</span><span class="o">=</span><span class="n">BLOSUM62</span><span class="p">,</span> <span class="n">gap</span><span class="o">=-</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Alinhamento local (Smith-Waterman).&quot;&quot;&quot;</span>
+    <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">cols</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">)]</span>
+    <span class="n">max_score</span><span class="p">,</span> <span class="n">max_pos</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_criar_matriz_sw</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">match</span><span class="p">,</span> <span class="n">mismatch</span><span class="p">,</span> <span class="n">gap</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gera a matriz para Smith-Waterman e guarda onde está o valor máximo.&quot;&quot;&quot;</span>
-    <span class="n">rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">matriz</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">)]</span>
-    
-    <span class="n">max_score</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">max_i</span><span class="p">,</span> <span class="n">max_j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-    
-    <span class="c1"># Nota: A primeira linha e coluna já são zeros, não precisamos de fazer nada (diferente do NW)</span>
-    
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cols</span><span class="p">):</span>
-            <span class="c1"># Calcular scores</span>
-            <span class="k">if</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-                <span class="n">score_diag</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">match</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">score_diag</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">mismatch</span>
-                
-            <span class="n">score_cima</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span>
-            <span class="n">score_esq</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span>
-            
-            <span class="c1"># A regra de ouro: O score nunca pode ser negativo (mínimo é 0)</span>
-            <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">score_diag</span><span class="p">,</span> <span class="n">score_cima</span><span class="p">,</span> <span class="n">score_esq</span><span class="p">)</span>
-            
-            <span class="c1"># Guardar o recorde (onde começa o melhor alinhamento local)</span>
-            <span class="k">if</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max_score</span><span class="p">:</span>
-                <span class="n">max_score</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-                <span class="n">max_i</span><span class="p">,</span> <span class="n">max_j</span> <span class="o">=</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span>
-                
-    <span class="k">return</span> <span class="n">matriz</span><span class="p">,</span> <span class="n">max_i</span><span class="p">,</span> <span class="n">max_j</span>
+            <span class="n">diag</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">score_subst</span><span class="p">(</span><span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">matriz_subst</span><span class="p">)</span>
+            <span class="n">cima</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span>
+            <span class="n">esq</span>  <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span>
+            <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">diag</span><span class="p">,</span> <span class="n">cima</span><span class="p">,</span> <span class="n">esq</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max_score</span><span class="p">:</span>
+                <span class="n">max_score</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">max_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_traceback_sw</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">max_pos</span><span class="p">,</span> <span class="n">matriz_subst</span><span class="p">,</span> <span class="n">gap</span><span class="p">)</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_traceback_sw</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">matriz</span><span class="p">,</span> <span class="n">start_i</span><span class="p">,</span> <span class="n">start_j</span><span class="p">,</span> <span class="n">match</span><span class="p">,</span> <span class="n">mismatch</span><span class="p">,</span> <span class="n">gap</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reconstrói o caminho parando ao encontrar zero.&quot;&quot;&quot;</span>
-    <span class="n">alin1</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">alin2</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">start_i</span><span class="p">,</span> <span class="n">start_j</span>
-    
-    <span class="c1"># Loop continua enquanto não encontrarmos um zero na matriz</span>
-    <span class="k">while</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">score_atual</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-        
-        <span class="c1"># Recalcular de onde poderia ter vindo para decidir o caminho</span>
-        <span class="n">score_diag</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">match_score</span> <span class="o">=</span> <span class="n">match</span> <span class="k">if</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="n">mismatch</span>
-        
-        <span class="n">score_cima</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-        <span class="n">score_esq</span> <span class="o">=</span> <span class="n">matriz</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        
-        <span class="k">if</span> <span class="n">score_atual</span> <span class="o">==</span> <span class="n">score_diag</span> <span class="o">+</span> <span class="n">match_score</span><span class="p">:</span>
-            <span class="n">alin1</span> <span class="o">+=</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">alin2</span> <span class="o">+=</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_traceback_sw</span><span class="p">(</span><span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">matriz_subst</span><span class="p">,</span> <span class="n">gap</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reconstrói alinhamento local a partir da matriz de scores.&quot;&quot;&quot;</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">start</span>
+    <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">while</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">score_subst</span><span class="p">(</span><span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">matriz_subst</span><span class="p">):</span>
+            <span class="n">a1</span> <span class="o">+=</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">a2</span> <span class="o">+=</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
             <span class="n">j</span> <span class="o">-=</span> <span class="mi">1</span>
-        <span class="k">elif</span> <span class="n">score_atual</span> <span class="o">==</span> <span class="n">score_cima</span> <span class="o">+</span> <span class="n">gap</span><span class="p">:</span>
-            <span class="n">alin1</span> <span class="o">+=</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">alin2</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span>
+        <span class="k">elif</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">gap</span><span class="p">:</span>
+            <span class="n">a1</span> <span class="o">+=</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">a2</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span>
             <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span> <span class="c1"># Esquerda</span>
-            <span class="n">alin1</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span>
-            <span class="n">alin2</span> <span class="o">+=</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">j</span> <span class="o">-=</span> <span class="mi">1</span>
-            
-    <span class="k">return</span> <span class="n">alin1</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">alin2</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-<div class="viewcode-block" id="gerar_consenso">
-<a class="viewcode-back" href="../../modules.html#bioinf.alinhamento.gerar_consenso">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">gerar_consenso</span><span class="p">(</span><span class="n">alin1</span><span class="p">,</span> <span class="n">alin2</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Gera uma sequência de consenso a partir de duas sequências alinhadas.</span>
-<span class="sd">    Regra simples: Se iguais mantém, se diferentes escolhe o caráter não-gap ou o primeiro.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">consenso</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">alin1</span><span class="p">,</span> <span class="n">alin2</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">c1</span> <span class="o">==</span> <span class="n">c2</span><span class="p">:</span>
-            <span class="n">consenso</span> <span class="o">+=</span> <span class="n">c1</span>
-        <span class="k">elif</span> <span class="n">c1</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
-            <span class="n">consenso</span> <span class="o">+=</span> <span class="n">c2</span>
-        <span class="k">elif</span> <span class="n">c2</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
-            <span class="n">consenso</span> <span class="o">+=</span> <span class="n">c1</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Em caso de conflito (ex: A vs T), escolhemos arbitrariamente o primeiro</span>
-            <span class="c1"># Numa implementação avançada, usaríamos contagem de frequências</span>
-            <span class="n">consenso</span> <span class="o">+=</span> <span class="n">c1</span> 
+            <span class="n">a1</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span>
+            <span class="n">a2</span> <span class="o">+=</span> <span class="n">seq2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">j</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">a1</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">a2</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="consenso_multiplas">
+<a class="viewcode-back" href="../../modules.html#bioinf.alinhamento.consenso_multiplas">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">consenso_multiplas</span><span class="p">(</span><span class="n">alinhamento</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gera sequência consenso; desempate pelo primeiro elemento da coluna.&quot;&quot;&quot;</span>
+    <span class="n">consenso</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">alinhamento</span><span class="p">):</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="n">col</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">col</span><span class="p">)}</span>
+        <span class="n">max_freq</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">freq</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">candidatos</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">col</span> <span class="k">if</span> <span class="n">freq</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">==</span> <span class="n">max_freq</span><span class="p">]</span>
+        <span class="n">consenso</span> <span class="o">+=</span> <span class="n">candidatos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">consenso</span></div>
+
 
 
 <div class="viewcode-block" id="alinhamento_multiplo">
 <a class="viewcode-back" href="../../modules.html#bioinf.alinhamento.alinhamento_multiplo">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">alinhamento_multiplo</span><span class="p">(</span><span class="n">lista_seqs</span><span class="p">,</span> <span class="n">match</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mismatch</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">gap</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Realiza alinhamento múltiplo progressivo (Heurística Gulosa).</span>
-<span class="sd">    1. Procura o par de sequências com melhor score.</span>
-<span class="sd">    2. Alinha-as e gera um consenso.</span>
-<span class="sd">    3. Substitui o par pelo consenso na lista.</span>
-<span class="sd">    4. Repete até sobrar apenas uma sequência (o consenso global).</span>
-<span class="sd">    </span>
-<span class="sd">    Retorna:</span>
-<span class="sd">        str: A sequência de consenso final.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Copiar lista para não estragar a original</span>
-    <span class="n">seqs_atuais</span> <span class="o">=</span> <span class="n">lista_seqs</span><span class="p">[:]</span>
-    
-    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqs_atuais</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">melhor_score</span> <span class="o">=</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
-        <span class="n">melhor_par</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">melhor_alinhamento</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        
-        <span class="c1"># 1. Comparar todos contra todos para achar o par mais compatível</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seqs_atuais</span><span class="p">)):</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqs_atuais</span><span class="p">)):</span>
-                <span class="c1"># Usamos o NW que já criaste para ver o score</span>
-                <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">score</span> <span class="o">=</span> <span class="n">needleman_wunsch</span><span class="p">(</span><span class="n">seqs_atuais</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">seqs_atuais</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">match</span><span class="p">,</span> <span class="n">mismatch</span><span class="p">,</span> <span class="n">gap</span><span class="p">)</span>
-                
+<span class="k">def</span><span class="w"> </span><span class="nf">alinhamento_multiplo</span><span class="p">(</span><span class="n">seqs</span><span class="p">,</span> <span class="n">matriz_subst</span><span class="o">=</span><span class="n">BLOSUM62</span><span class="p">,</span> <span class="n">gap</span><span class="o">=-</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Alinhamento múltiplo progressivo usando Needleman-Wunsch.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">seqs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[[</span><span class="n">seqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]],</span> <span class="n">seqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">alinhamentos</span> <span class="o">=</span> <span class="p">[[</span><span class="n">s</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">seqs</span><span class="p">]</span>
+
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">alinhamentos</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">melhor_score</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e9</span>
+        <span class="n">melhor_par</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">melhor_alin</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alinhamentos</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">alinhamentos</span><span class="p">)):</span>
+                <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">score</span> <span class="o">=</span> <span class="n">needleman_wunsch</span><span class="p">(</span><span class="n">alinhamentos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">alinhamentos</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">matriz_subst</span><span class="p">,</span> <span class="n">gap</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="n">melhor_score</span><span class="p">:</span>
                     <span class="n">melhor_score</span> <span class="o">=</span> <span class="n">score</span>
                     <span class="n">melhor_par</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
-                    <span class="n">melhor_alinhamento</span> <span class="o">=</span> <span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span>
-        
-        <span class="c1"># 2. Gerar consenso do melhor par</span>
-        <span class="n">s1_alin</span><span class="p">,</span> <span class="n">s2_alin</span> <span class="o">=</span> <span class="n">melhor_alinhamento</span>
-        <span class="n">novo_consenso</span> <span class="o">=</span> <span class="n">gerar_consenso</span><span class="p">(</span><span class="n">s1_alin</span><span class="p">,</span> <span class="n">s2_alin</span><span class="p">)</span>
-        
-        <span class="c1"># 3. Remover as sequências originais e adicionar o consenso</span>
+                    <span class="n">melhor_alin</span> <span class="o">=</span> <span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span>
+
         <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">melhor_par</span>
-        <span class="c1"># Remover do maior índice para o menor para não afetar a ordem</span>
-        <span class="n">seqs_atuais</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
-        <span class="n">seqs_atuais</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
-        
-        <span class="n">seqs_atuais</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">novo_consenso</span><span class="p">)</span>
-        
-    <span class="c1"># No final, sobra apenas uma string na lista: o consenso global</span>
-    <span class="k">return</span> <span class="n">seqs_atuais</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+        <span class="n">alinhamentos</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="n">alinhamentos</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">alinhamentos</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">melhor_alin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">melhor_alin</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+
+    <span class="k">return</span> <span class="n">alinhamentos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">consenso_multiplas</span><span class="p">(</span><span class="n">alinhamentos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
 
 </pre></div>
 

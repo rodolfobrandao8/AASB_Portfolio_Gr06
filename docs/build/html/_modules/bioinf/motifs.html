@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>bioinf.motifs &mdash; AASB Portfolio 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
@@ -70,111 +70,169 @@
              
   <h1>Source code for bioinf.motifs</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
 
 <div class="viewcode-block" id="prosite_para_regex">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.prosite_para_regex">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">prosite_para_regex</span><span class="p">(</span><span class="n">padrao_prosite</span><span class="p">):</span>
-    <span class="c1"># 1. Remover o &#39;-&#39; que separa os elementos</span>
-    <span class="n">regex</span> <span class="o">=</span> <span class="n">padrao_prosite</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-    
-    <span class="c1"># 2. &#39;x&#39; vira &#39;.&#39; (qualquer caracter)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">prosite_para_regex</span><span class="p">(</span><span class="n">padrao</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converte um padrão PROSITE para expressão regular.</span>
+<span class="sd">    Suporta x, { }, (n), (n,m), &lt; &gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">regex</span> <span class="o">=</span> <span class="n">padrao</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">regex</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
-    
-    <span class="c1"># 3. &#39;{AB}&#39; vira &#39;[^AB]&#39; (qualquer coisa EXCETO A e B)</span>
     <span class="n">regex</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;{&#39;</span><span class="p">,</span> <span class="s1">&#39;[^&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;}&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">)</span>
-    
-    <span class="c1"># 4. &#39;(3)&#39; vira &#39;{3}&#39; (repetição)</span>
-    <span class="n">regex</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;{&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;}&#39;</span><span class="p">)</span>
-    
+
+    <span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\((\d+),(\d+)\)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;{\1,\2}&#39;</span><span class="p">,</span> <span class="n">regex</span><span class="p">)</span>
+    <span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\((\d+)\)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;{\1}&#39;</span><span class="p">,</span> <span class="n">regex</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">regex</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">):</span>
+        <span class="n">regex</span> <span class="o">=</span> <span class="s1">&#39;^&#39;</span> <span class="o">+</span> <span class="n">regex</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">if</span> <span class="n">regex</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">):</span>
+        <span class="n">regex</span> <span class="o">=</span> <span class="n">regex</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;$&#39;</span>
+
     <span class="k">return</span> <span class="n">regex</span></div>
+
 
 
 <div class="viewcode-block" id="procurar_motifs">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.procurar_motifs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">procurar_motifs</span><span class="p">(</span><span class="n">sequencia</span><span class="p">,</span> <span class="n">padrao_prosite</span><span class="p">):</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Procura posições de motifs na sequência usando padrão PROSITE.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">regex</span> <span class="o">=</span> <span class="n">prosite_para_regex</span><span class="p">(</span><span class="n">padrao_prosite</span><span class="p">)</span>
-    
-    <span class="c1"># Usamos re.finditer para achar todas as posições</span>
-    <span class="c1"># (?=...) é um lookahead para permitir overlaps, mas para simplificar</span>
-    <span class="c1"># vamos usar a busca padrão que é mais comum em exercícios básicos.</span>
-    <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">sequencia</span><span class="p">)</span>
-    
-    <span class="n">posicoes</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
-        <span class="n">posicoes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">())</span>
-        
-    <span class="k">return</span> <span class="n">posicoes</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">sequencia</span><span class="p">)]</span></div>
+
+
+
+<div class="viewcode-block" id="enzima_para_regex">
+<a class="viewcode-back" href="../../modules.html#bioinf.motifs.enzima_para_regex">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">enzima_para_regex</span><span class="p">(</span><span class="n">sitio</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converte sítio de enzima (ex: G^AATTC) em sequência e posição de corte.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">corte</span> <span class="o">=</span> <span class="n">sitio</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">)</span>
+    <span class="n">seq</span> <span class="o">=</span> <span class="n">sitio</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">seq</span><span class="p">,</span> <span class="n">corte</span></div>
+
+
+<div class="viewcode-block" id="fragmentar_dna">
+<a class="viewcode-back" href="../../modules.html#bioinf.motifs.fragmentar_dna">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fragmentar_dna</span><span class="p">(</span><span class="n">sequencia</span><span class="p">,</span> <span class="n">sitio_enzima</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fragmenta uma sequência de DNA com base num sítio de enzima de restrição.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">padrao</span><span class="p">,</span> <span class="n">corte</span> <span class="o">=</span> <span class="n">enzima_para_regex</span><span class="p">(</span><span class="n">sitio_enzima</span><span class="p">)</span>
+    <span class="n">posicoes</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">padrao</span><span class="p">,</span> <span class="n">sequencia</span><span class="p">)]</span>
+
+    <span class="n">cortes</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="o">+</span> <span class="n">corte</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">posicoes</span><span class="p">]</span>
+    <span class="n">fragmentos</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">inicio</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cortes</span><span class="p">:</span>
+        <span class="n">fragmentos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sequencia</span><span class="p">[</span><span class="n">inicio</span><span class="p">:</span><span class="n">c</span><span class="p">])</span>
+        <span class="n">inicio</span> <span class="o">=</span> <span class="n">c</span>
+
+    <span class="c1"># Adiciona o fragmento restante, mesmo que vazio</span>
+    <span class="n">fragmentos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sequencia</span><span class="p">[</span><span class="n">inicio</span><span class="p">:])</span>
+
+    <span class="k">return</span> <span class="n">fragmentos</span><span class="p">,</span> <span class="n">cortes</span></div>
+
+
 
 
 <div class="viewcode-block" id="criar_pwm">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.criar_pwm">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">criar_pwm</span><span class="p">(</span><span class="n">lista_seqs</span><span class="p">,</span> <span class="n">pseudocount</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-   
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">lista_seqs</span><span class="p">:</span> <span class="k">return</span> <span class="p">[]</span>
-    
-    <span class="n">comp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lista_seqs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">num_seqs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lista_seqs</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cria uma PWM a partir de uma lista de sequências.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">lista_seqs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
     <span class="n">alfabeto</span> <span class="o">=</span> <span class="s2">&quot;ACGT&quot;</span>
-    
+    <span class="n">comprimento</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lista_seqs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">pwm</span> <span class="o">=</span> <span class="p">[]</span>
-    
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">comp</span><span class="p">):</span>
-        <span class="c1"># 1. Contar</span>
-        <span class="n">coluna</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">lista_seqs</span><span class="p">]</span>
-        <span class="n">contagens</span> <span class="o">=</span> <span class="p">{</span><span class="n">base</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">alfabeto</span><span class="p">}</span>
-        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">coluna</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">contagens</span><span class="p">:</span> <span class="n">contagens</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-            
-        <span class="c1"># 2. Converter para Probabilidade (Laplace)</span>
-        <span class="c1"># Prob = (Count + 1) / (Total + 4)</span>
-        <span class="n">probs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">denominador</span> <span class="o">=</span> <span class="n">num_seqs</span> <span class="o">+</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">pseudocount</span><span class="p">)</span>
-        
-        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">alfabeto</span><span class="p">:</span>
-            <span class="n">probs</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">contagens</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">+</span> <span class="n">pseudocount</span><span class="p">)</span> <span class="o">/</span> <span class="n">denominador</span>
-            
-        <span class="n">pwm</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">probs</span><span class="p">)</span>
-        
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">comprimento</span><span class="p">):</span>
+        <span class="n">contagens</span> <span class="o">=</span> <span class="p">{</span><span class="n">b</span><span class="p">:</span> <span class="n">pseudocount</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">alfabeto</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">lista_seqs</span><span class="p">:</span>
+            <span class="n">contagens</span><span class="p">[</span><span class="n">seq</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">contagens</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">pwm</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">b</span><span class="p">:</span> <span class="n">contagens</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">/</span> <span class="n">total</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">alfabeto</span><span class="p">})</span>
+
     <span class="k">return</span> <span class="n">pwm</span></div>
+
 
 
 <div class="viewcode-block" id="probabilidade_seq_pwm">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.probabilidade_seq_pwm">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">probabilidade_seq_pwm</span><span class="p">(</span><span class="n">pwm</span><span class="p">,</span> <span class="n">sequencia</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calcula a probabilidade de uma sequência gerar a PWM (multiplicação).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calcula a probabilidade de uma sequência gerar a PWM.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">prob</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">base</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sequencia</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwm</span><span class="p">)</span> <span class="ow">and</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">pwm</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-            <span class="n">prob</span> <span class="o">*=</span> <span class="n">pwm</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">base</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">prob</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># Se a base não estiver na PWM ou tamanho errado</span>
+        <span class="n">prob</span> <span class="o">*=</span> <span class="n">pwm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">prob</span></div>
+
 
 
 <div class="viewcode-block" id="subsequencia_mais_provavel">
 <a class="viewcode-back" href="../../modules.html#bioinf.motifs.subsequencia_mais_provavel">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">subsequencia_mais_provavel</span><span class="p">(</span><span class="n">pwm</span><span class="p">,</span> <span class="n">sequencia_alvo</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Desliza a PWM pela sequência alvo para achar a posição mais provável.</span>
-<span class="sd">    Retorna (Posição_Inicial, Subsequência, Probabilidade).</span>
+<span class="sd">    Encontra a subsequência mais provável na sequência alvo com base na PWM.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">tamanho_motif</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwm</span><span class="p">)</span>
+    <span class="n">tamanho</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pwm</span><span class="p">)</span>
     <span class="n">melhor_prob</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
     <span class="n">melhor_pos</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
     <span class="n">melhor_sub</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    
-    <span class="c1"># Janela deslizante</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sequencia_alvo</span><span class="p">)</span> <span class="o">-</span> <span class="n">tamanho_motif</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">subseq</span> <span class="o">=</span> <span class="n">sequencia_alvo</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">tamanho_motif</span><span class="p">]</span>
-        <span class="n">prob</span> <span class="o">=</span> <span class="n">probabilidade_seq_pwm</span><span class="p">(</span><span class="n">pwm</span><span class="p">,</span> <span class="n">subseq</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="n">prob</span> <span class="o">&gt;</span> <span class="n">melhor_prob</span><span class="p">:</span>
-            <span class="n">melhor_prob</span> <span class="o">=</span> <span class="n">prob</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sequencia_alvo</span><span class="p">)</span> <span class="o">-</span> <span class="n">tamanho</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">sub</span> <span class="o">=</span> <span class="n">sequencia_alvo</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">tamanho</span><span class="p">]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">probabilidade_seq_pwm</span><span class="p">(</span><span class="n">pwm</span><span class="p">,</span> <span class="n">sub</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="o">&gt;</span> <span class="n">melhor_prob</span><span class="p">:</span>
+            <span class="n">melhor_prob</span> <span class="o">=</span> <span class="n">p</span>
             <span class="n">melhor_pos</span> <span class="o">=</span> <span class="n">i</span>
-            <span class="n">melhor_sub</span> <span class="o">=</span> <span class="n">subseq</span>
-            
+            <span class="n">melhor_sub</span> <span class="o">=</span> <span class="n">sub</span>
+
     <span class="k">return</span> <span class="n">melhor_pos</span><span class="p">,</span> <span class="n">melhor_sub</span><span class="p">,</span> <span class="n">melhor_prob</span></div>
+
+
+
+<div class="viewcode-block" id="pwm_para_pssm">
+<a class="viewcode-back" href="../../modules.html#bioinf.motifs.pwm_para_pssm">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pwm_para_pssm</span><span class="p">(</span><span class="n">pwm</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converte PWM em PSSM usando log2 odds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">bg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">bg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">}</span>
+
+    <span class="n">pssm</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">coluna</span> <span class="ow">in</span> <span class="n">pwm</span><span class="p">:</span>
+        <span class="n">pssm</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="n">base</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">coluna</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">/</span> <span class="n">bg</span><span class="p">[</span><span class="n">base</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">coluna</span>
+        <span class="p">})</span>
+    <span class="k">return</span> <span class="n">pssm</span></div>
+
+
+
+<div class="viewcode-block" id="score_seq_pssm">
+<a class="viewcode-back" href="../../modules.html#bioinf.motifs.score_seq_pssm">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">score_seq_pssm</span><span class="p">(</span><span class="n">pssm</span><span class="p">,</span> <span class="n">sequencia</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calcula o score de uma sequência usando PSSM.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">base</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sequencia</span><span class="p">):</span>
+        <span class="n">score</span> <span class="o">+=</span> <span class="n">pssm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">score</span></div>
 
 </pre></div>
 
