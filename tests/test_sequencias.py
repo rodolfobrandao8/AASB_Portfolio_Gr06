@@ -80,7 +80,5 @@ class TestGetORFs(unittest.TestCase):
             self.assertEqual(get_orfs(dna), esperado)
 
 if __name__ == "__main__":
-    unittest.main(argv=['first-arg-is-ignored'], exit=False)
-
-if __name__ == "__main__":
     unittest.main()
+
