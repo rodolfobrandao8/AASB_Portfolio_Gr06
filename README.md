@@ -200,7 +200,7 @@ radon mi bioinf/ -s
 ```
 
 # Autores
-Grupo 06
+Grupo 06-
 Gonçalo Gomes PG46567
 Pedro Fontão PG59429
 Rodolfo Ferreira PG59765
