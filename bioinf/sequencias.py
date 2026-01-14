@@ -212,6 +212,17 @@ def complemento_inverso(dna_seq):
 
 
 def encontra_codao_stop(seq,start_index):
+    """
+    Procura o primeiro codão de paragem (TAA, TAG, TGA) em fase.
+    
+    Esta função é o motor de paragem do algoritmo. Ela salta de 3 em 3 
+    bases a partir do início (ATG) até encontrar o fim da sequência.
+
+
+    >>> encontra_codao_stop("ATGCCCTAGGGG", 0)
+        'ATGCCCTAG'
+
+    """
     codao_stop = {"TAA", "TAG", "TGA"}
     for j in range(start_index, len(seq) -2,3):
         if seq[j:j+3] in codao_stop:
@@ -219,6 +230,22 @@ def encontra_codao_stop(seq,start_index):
 
 
 def get_orfs(dna):
+   """
+    Identifica Open Reading Frames (ORFs) numa sequência de DNA.
+
+    Esta função percorre a sequência à procura de um codão de início (ATG) 
+    e termina quando encontra um dos codoes stop (TAA, TAG, TGA).
+
+    Args:
+        dna (str): A sequência de DNA a analisar.
+
+    Returns:
+        list: Uma lista de strings, onde cada string é uma ORF encontrada.
+
+    >>> get_orfs("atgcccatgtaattt")
+        ['ATGCCCATGTAA', 'ATGTAA']
+"""
+
     codao_stop = {"TAA", "TAG", "TGA"}
     if not isinstance(dna, str):
         return []
@@ -230,6 +257,7 @@ def get_orfs(dna):
             if orf:
                 orfs.append(orf)
     return orfs
+
 
 
 
